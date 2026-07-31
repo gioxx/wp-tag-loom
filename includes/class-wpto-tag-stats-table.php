@@ -52,20 +52,12 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 	}
 
 	public function column_cb( $item ) {
-		$checkbox = sprintf( '<input type="checkbox" name="tag_id[]" value="%d" />', $item['id'] );
-
-		if ( WPTO_Tag_Lock::is_locked( $item['id'] ) ) {
-			// Locked tags stay selectable so they can be picked for the "Unlock"
-			// bulk action; destructive bulk actions (delete, add to merge) still
-			// drop locked ids server-side via WPTO_Tag_Lock::filter_unlocked().
-			return $checkbox . sprintf(
-				'<span class="dashicons dashicons-lock" aria-label="%s" title="%s"></span>',
-				esc_attr__( 'Locked', 'smart-tags-optimizer' ),
-				esc_attr__( 'Locked', 'smart-tags-optimizer' )
-			);
-		}
-
-		return $checkbox;
+		// Locked tags stay selectable (checkbox always rendered) so they can be
+		// picked for the "Unlock" bulk action; destructive bulk actions (delete,
+		// add to merge) still drop locked ids server-side via
+		// WPTO_Tag_Lock::filter_unlocked(). Lock state itself is shown in the
+		// "Lock" column, not duplicated here.
+		return sprintf( '<input type="checkbox" name="tag_id[]" value="%d" />', $item['id'] );
 	}
 
 	public function column_lock( $item ) {
@@ -85,11 +77,12 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 
 		$label = $locked
 			? __( 'Unlock this tag', 'smart-tags-optimizer' )
-			: __( 'Lock this tag (protects it from checkbox selection, merging, and deletion)', 'smart-tags-optimizer' );
+			: __( 'Lock this tag (protects it from merging and deletion)', 'smart-tags-optimizer' );
 
 		return sprintf(
-			'<a href="%s" class="wpto-toggle-lock" aria-label="%s" title="%s"><span class="dashicons %s"></span></a>',
+			'<a href="%s" class="wpto-toggle-lock %s" aria-label="%s" title="%s"><span class="dashicons %s"></span></a>',
 			esc_url( $toggle_url ),
+			$locked ? 'wpto-toggle-lock--locked' : 'wpto-toggle-lock--unlocked',
 			esc_attr( $label ),
 			esc_attr( $label ),
 			$locked ? 'dashicons-lock' : 'dashicons-unlock'

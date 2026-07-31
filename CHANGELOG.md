@@ -2,6 +2,10 @@
 
 All notable changes to this plugin are documented in this file.
 
+## [0.22.2] - 2026-07-31
+
+- Removed the duplicate lock dashicon rendered under the checkbox on locked rows (`column_cb()` in `includes/class-wpto-tag-stats-table.php`); the checkbox alone is enough since the "Lock" column already shows state. The "Lock" column icon now also colors itself (red closed lock when locked, gray open lock when unlocked via new `.wpto-toggle-lock--locked`/`--unlocked` CSS classes) instead of relying solely on icon shape.
+
 ## [0.22.1] - 2026-07-31
 
 - Added "Lock"/"Unlock" bulk actions to the "All tags" table's Bulk actions dropdown. Locked tags are checkbox-selectable again (previously hidden entirely) so they can be picked for a bulk unlock; destructive bulk actions (delete, add to merge) still drop locked ids server-side via `WPTO_Tag_Lock::filter_unlocked()`.

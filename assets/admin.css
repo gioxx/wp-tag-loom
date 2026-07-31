@@ -3,6 +3,16 @@
 	margin-bottom: 20px;
 }
 
+/* "Lock" column toggle: red closed lock when locked, muted gray open lock
+   when unlocked, so state reads at a glance without a second icon. */
+.wpto-toggle-lock--locked .dashicons {
+	color: #b32d2e;
+}
+
+.wpto-toggle-lock--unlocked .dashicons {
+	color: #8c8f94;
+}
+
 .wpto-intro {
 	max-width: 800px;
 	margin: 0 0 16px;
