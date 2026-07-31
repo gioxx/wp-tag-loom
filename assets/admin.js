@@ -274,6 +274,18 @@
 		}
 	} );
 
+	// After Ajax removes/hides the last visible row(s) on a page, the table
+	// would otherwise sit empty with stale pagination/counts until the user
+	// manually reloads or changes page; reload automatically once nothing
+	// tagged "wpto-tag-row-*" is left, so the next page (or "no items") loads.
+	function reloadIfTableEmpty() {
+		window.setTimeout( function () {
+			if ( 0 === $( 'tr[id^="wpto-tag-row-"]' ).length ) {
+				window.location.reload();
+			}
+		}, 250 );
+	}
+
 	function updateLockUI( $link, locked ) {
 		$link
 			.toggleClass( 'wpto-toggle-lock--locked', locked )
@@ -302,6 +314,7 @@
 
 			if ( locked && $( '#wpto-hide-locked' ).is( ':checked' ) ) {
 				$( '#wpto-tag-row-' + tagId ).fadeOut( 200, function () { $( this ).remove(); } );
+				reloadIfTableEmpty();
 			}
 		} ).fail( function () {
 			window.alert( wptoData.i18n.error );
@@ -324,6 +337,7 @@
 			}
 
 			$( '#wpto-tag-row-' + tagId ).fadeOut( 200, function () { $( this ).remove(); } );
+			reloadIfTableEmpty();
 		} ).fail( function () {
 			window.alert( wptoData.i18n.error );
 		} );
@@ -379,6 +393,7 @@
 				$( response.data.ids ).each( function ( i, id ) {
 					$( '#wpto-tag-row-' + id ).fadeOut( 200, function () { $( this ).remove(); } );
 				} );
+				reloadIfTableEmpty();
 				resetBulkControls();
 			} ).fail( function () {
 				window.alert( wptoData.i18n.error );
@@ -401,6 +416,9 @@
 						$row.fadeOut( 200, function () { $( this ).remove(); } );
 					}
 				} );
+				if ( locked && hideLocked ) {
+					reloadIfTableEmpty();
+				}
 				resetBulkControls();
 			} ).fail( function () {
 				window.alert( wptoData.i18n.error );

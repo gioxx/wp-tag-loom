@@ -2,6 +2,10 @@
 
 All notable changes to this plugin are documented in this file.
 
+## [Unreleased]
+
+- Fixed the "All tags" table staying empty after an Ajax action (bulk delete, or lock/hide with "Hide locked tags" on) removed every row on the current page: pagination and item counts went stale until a manual refresh or page change. Added `reloadIfTableEmpty()` in `assets/admin.js`, which auto-reloads the page once no `wpto-tag-row-*` row is left after a delete or lock-triggered hide.
+
 ## [0.23.2] - 2026-07-31
 
 - Fixed locked tags being unable to enter the merge selection at all, even as the merge *target* (which always survives a merge — only source tags get deleted). Removed the lock filtering from `add_to_merge_basket()` and `get_merge_basket_terms()` in `includes/class-wpto-admin-page.php`, from `process_add_tags_by_name()` (dropping its "Skipped locked tag(s)" notice), and removed `WPTO_Merge_Handler::apply()`'s rejection of a locked target. Locked tags remain fully protected as a merge *source*: `apply()` still skips them there instead of deleting them.
