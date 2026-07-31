@@ -351,6 +351,20 @@
 			return;
 		}
 
+		// Resetting the action selects back to "Bulk actions" happens only
+		// after the Ajax call resolves, and deferred via setTimeout so it
+		// runs after WP core's own submit-time bulk-action validation
+		// (wp-admin's common.js, bound to the same form) has already read
+		// the selected value — resetting synchronously here made core see
+		// "-1" and pop its "Please select a bulk action" alert even though
+		// our preventDefault() had already stopped the real submit.
+		function resetBulkControls() {
+			window.setTimeout( function () {
+				$form.find( 'select[name="action"], select[name="action2"]' ).val( '-1' );
+				$form.find( 'input[name="tag_id[]"]:checked' ).prop( 'checked', false );
+			}, 0 );
+		}
+
 		if ( 'delete' === action ) {
 			if ( ! window.confirm( wptoData.i18n.confirmDeleteTags ) ) {
 				return;
@@ -365,6 +379,7 @@
 				$( response.data.ids ).each( function ( i, id ) {
 					$( '#wpto-tag-row-' + id ).fadeOut( 200, function () { $( this ).remove(); } );
 				} );
+				resetBulkControls();
 			} ).fail( function () {
 				window.alert( wptoData.i18n.error );
 			} );
@@ -386,13 +401,11 @@
 						$row.fadeOut( 200, function () { $( this ).remove(); } );
 					}
 				} );
+				resetBulkControls();
 			} ).fail( function () {
 				window.alert( wptoData.i18n.error );
 			} );
 		}
-
-		$form.find( 'select[name="action"], select[name="action2"]' ).val( '-1' );
-		$form.find( 'input[name="tag_id[]"]:checked' ).prop( 'checked', false );
 	} );
 
 	$( document ).on( 'click', '.wpto-retry-batch', function () {

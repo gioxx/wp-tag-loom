@@ -2,6 +2,10 @@
 
 All notable changes to this plugin are documented in this file.
 
+## [0.23.1] - 2026-07-31
+
+- Fixed the "All tags" bulk actions (Lock/Unlock/Delete) showing WordPress core's "Please select a bulk action to perform." alert even though the action had actually run. The Ajax submit handler in `assets/admin.js` was resetting the action `<select>`s back to `-1` synchronously, before WP core's own submit-time bulk-action validation (bound to the same form) had a chance to read the selected value; deferred the reset via `setTimeout` so it happens after the current submit event has fully finished.
+
 ## [0.23.0] - 2026-07-31
 
 - Added a "Hide locked tags" checkbox to the "All tags" table (below the Quick sort links), checked by default, so locked tags stay out of the way while working the list. Persisted per-user like the usage-bucket filter (`WPTO_Admin_Page::get_hide_locked_tags()`); filters via a `meta_query` on `wpto_locked` in both `wp_count_terms()` and `get_terms()` in `WPTO_Tag_Stats_Table::prepare_items()`.

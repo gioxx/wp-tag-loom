@@ -5,7 +5,7 @@ Tags: tags, ai, claude, taxonomy, cleanup
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.23.0
+Stable tag: 0.23.1
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,9 @@ It's kept in a "Rejected suggestions" list and can be restored to pending at any
 Yes, the "Unused tags" table lists them with a bulk delete option.
 
 == Changelog ==
+= 0.23.1 =
+* Fixed the "All tags" bulk actions (Lock/Unlock/Delete) showing a "Please select a bulk action to perform." alert even though the action had actually run.
+
 = 0.23.0 =
 * Added a "Hide locked tags" checkbox to the "All tags" table, checked by default.
 * Fixed the "All tags" table losing an active search/sort/bucket filter when paging past page 1.
