@@ -274,14 +274,125 @@
 		}
 	} );
 
+	function updateLockUI( $link, locked ) {
+		$link
+			.toggleClass( 'wpto-toggle-lock--locked', locked )
+			.toggleClass( 'wpto-toggle-lock--unlocked', ! locked )
+			.attr( 'title', locked ? wptoData.i18n.unlockThisTag : wptoData.i18n.lockThisTag )
+			.attr( 'aria-label', locked ? wptoData.i18n.unlockThisTag : wptoData.i18n.lockThisTag )
+			.find( '.dashicons' )
+			.toggleClass( 'dashicons-lock', locked )
+			.toggleClass( 'dashicons-unlock', ! locked );
+	}
+
+	$( document ).on( 'click', '.wpto-toggle-lock', function ( e ) {
+		e.preventDefault();
+
+		var $link = $( this );
+		var tagId = $link.data( 'id' );
+
+		ajax( { action: 'wpto_toggle_lock', tag_id: tagId } ).done( function ( response ) {
+			if ( ! response.success ) {
+				window.alert( response.data && response.data.message ? response.data.message : wptoData.i18n.error );
+				return;
+			}
+
+			var locked = response.data.locked;
+			updateLockUI( $link, locked );
+
+			if ( locked && $( '#wpto-hide-locked' ).is( ':checked' ) ) {
+				$( '#wpto-tag-row-' + tagId ).fadeOut( 200, function () { $( this ).remove(); } );
+			}
+		} ).fail( function () {
+			window.alert( wptoData.i18n.error );
+		} );
+	} );
+
+	$( document ).on( 'click', '.wpto-delete-tag', function ( e ) {
+		e.preventDefault();
+
+		if ( ! window.confirm( wptoData.i18n.confirmDeleteTag ) ) {
+			return;
+		}
+
+		var tagId = $( this ).data( 'id' );
+
+		ajax( { action: 'wpto_delete_tags', tag_id: [ tagId ] } ).done( function ( response ) {
+			if ( ! response.success ) {
+				window.alert( response.data && response.data.message ? response.data.message : wptoData.i18n.error );
+				return;
+			}
+
+			$( '#wpto-tag-row-' + tagId ).fadeOut( 200, function () { $( this ).remove(); } );
+		} ).fail( function () {
+			window.alert( wptoData.i18n.error );
+		} );
+	} );
+
 	$( '#wpto-tags-filter' ).on( 'submit', function ( e ) {
-		var action = $( this ).find( 'select[name="action"]' ).val();
+		var $form = $( this );
+		var action = $form.find( 'select[name="action"]' ).val();
 		if ( '-1' === action ) {
-			action = $( this ).find( 'select[name="action2"]' ).val();
+			action = $form.find( 'select[name="action2"]' ).val();
 		}
-		if ( 'delete' === action && ! window.confirm( wptoData.i18n.confirmDeleteTags ) ) {
-			e.preventDefault();
+
+		if ( 'delete' !== action && 'lock' !== action && 'unlock' !== action ) {
+			return;
 		}
+
+		e.preventDefault();
+
+		var ids = $form.find( 'input[name="tag_id[]"]:checked' ).map( function () {
+			return $( this ).val();
+		} ).get();
+
+		if ( ! ids.length ) {
+			window.alert( wptoData.i18n.noneSelected );
+			return;
+		}
+
+		if ( 'delete' === action ) {
+			if ( ! window.confirm( wptoData.i18n.confirmDeleteTags ) ) {
+				return;
+			}
+
+			ajax( { action: 'wpto_delete_tags', tag_id: ids } ).done( function ( response ) {
+				if ( ! response.success ) {
+					window.alert( response.data && response.data.message ? response.data.message : wptoData.i18n.error );
+					return;
+				}
+
+				$( response.data.ids ).each( function ( i, id ) {
+					$( '#wpto-tag-row-' + id ).fadeOut( 200, function () { $( this ).remove(); } );
+				} );
+			} ).fail( function () {
+				window.alert( wptoData.i18n.error );
+			} );
+		} else {
+			var locked = 'lock' === action;
+			var hideLocked = $( '#wpto-hide-locked' ).is( ':checked' );
+
+			ajax( { action: 'wpto_bulk_lock', tag_id: ids, locked: locked ? '1' : '0' } ).done( function ( response ) {
+				if ( ! response.success ) {
+					window.alert( response.data && response.data.message ? response.data.message : wptoData.i18n.error );
+					return;
+				}
+
+				$( response.data.ids ).each( function ( i, id ) {
+					var $row = $( '#wpto-tag-row-' + id );
+					updateLockUI( $row.find( '.wpto-toggle-lock' ), locked );
+
+					if ( locked && hideLocked ) {
+						$row.fadeOut( 200, function () { $( this ).remove(); } );
+					}
+				} );
+			} ).fail( function () {
+				window.alert( wptoData.i18n.error );
+			} );
+		}
+
+		$form.find( 'select[name="action"], select[name="action2"]' ).val( '-1' );
+		$form.find( 'input[name="tag_id[]"]:checked' ).prop( 'checked', false );
 	} );
 
 	$( document ).on( 'click', '.wpto-retry-batch', function () {

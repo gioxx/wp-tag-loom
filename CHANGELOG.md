@@ -2,6 +2,12 @@
 
 All notable changes to this plugin are documented in this file.
 
+## [0.23.0] - 2026-07-31
+
+- Added a "Hide locked tags" checkbox to the "All tags" table (below the Quick sort links), checked by default, so locked tags stay out of the way while working the list. Persisted per-user like the usage-bucket filter (`WPTO_Admin_Page::get_hide_locked_tags()`); filters via a `meta_query` on `wpto_locked` in both `wp_count_terms()` and `get_terms()` in `WPTO_Tag_Stats_Table::prepare_items()`.
+- Fixed the "All tags" table losing an active search (and sort/bucket filter) when paging past page 1. The `#wpto-tags-filter` form posted via `method="post"`, so `s`/`orderby`/etc. never made it into the URL that `WP_List_Table`'s pagination links are built from; switched the form to `method="get"` and updated the bulk-action handlers (`maybe_process_stats_tab_actions()`, `process_bulk_delete()`, `process_bulk_toggle_lock()`, the `add_to_merge` branch in `render_stats_tab()`) to read `tag_id[]`/`action`/`action2` from `$_REQUEST` instead of `$_POST` to match.
+- Converted single-row lock toggle, single-row delete, and the "Lock"/"Unlock"/"Delete" bulk actions on the "All tags" table to Ajax (new `wp_ajax_wpto_toggle_lock`, `wp_ajax_wpto_bulk_lock`, `wp_ajax_wpto_delete_tags` handlers), so those no longer reload the page and drop the current search/sort/pagination state. Rows update or fade out in place; the "Hide locked tags" checkbox is respected when a row gets locked via Ajax. The full-page-reload routes (`process_toggle_lock()`, `process_bulk_delete()`, `process_bulk_toggle_lock()`) are kept as a no-JS fallback. The "Add to merge selection" bulk action is intentionally left as a normal (non-Ajax) submit, since it needs to redraw the merge basket section below the table anyway.
+
 ## [0.22.2] - 2026-07-31
 
 - Removed the duplicate lock dashicon rendered under the checkbox on locked rows (`column_cb()` in `includes/class-wpto-tag-stats-table.php`); the checkbox alone is enough since the "Lock" column already shows state. The "Lock" column icon now also colors itself (red closed lock when locked, gray open lock when unlocked via new `.wpto-toggle-lock--locked`/`--unlocked` CSS classes) instead of relying solely on icon shape.

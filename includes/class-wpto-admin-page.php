@@ -28,6 +28,9 @@ class WPTO_Admin_Page {
 		add_action( 'wp_ajax_wpto_bulk_suggestion_action', array( __CLASS__, 'ajax_bulk_suggestion_action' ) );
 		add_action( 'wp_ajax_wpto_recount_tags', array( __CLASS__, 'ajax_recount_tags' ) );
 		add_action( 'wp_ajax_wpto_update_tag', array( __CLASS__, 'ajax_update_tag' ) );
+		add_action( 'wp_ajax_wpto_toggle_lock', array( __CLASS__, 'ajax_toggle_lock' ) );
+		add_action( 'wp_ajax_wpto_bulk_lock', array( __CLASS__, 'ajax_bulk_lock' ) );
+		add_action( 'wp_ajax_wpto_delete_tags', array( __CLASS__, 'ajax_delete_tags' ) );
 	}
 
 	public static function register_menu() {
@@ -115,6 +118,9 @@ class WPTO_Admin_Page {
 					'quickEditSlug'      => __( 'Slug', 'smart-tags-optimizer' ),
 					'quickEditSave'      => __( 'Save', 'smart-tags-optimizer' ),
 					'quickEditCancel'    => __( 'Cancel', 'smart-tags-optimizer' ),
+					'confirmDeleteTag'   => __( 'Delete this tag? This action cannot be undone.', 'smart-tags-optimizer' ),
+					'lockThisTag'        => __( 'Lock this tag (protects it from merging and deletion)', 'smart-tags-optimizer' ),
+					'unlockThisTag'      => __( 'Unlock this tag', 'smart-tags-optimizer' ),
 				),
 			)
 		);
@@ -370,7 +376,8 @@ class WPTO_Admin_Page {
 		if ( 'add_to_merge' === $action ) {
 			check_admin_referer( 'bulk-tags' );
 
-			$ids = isset( $_POST['tag_id'] ) ? array_map( 'absint', (array) $_POST['tag_id'] ) : array();
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified above via check_admin_referer(); the "All tags" filter form is a GET request so tag_id[] arrives via $_REQUEST.
+			$ids = isset( $_REQUEST['tag_id'] ) ? array_map( 'absint', (array) $_REQUEST['tag_id'] ) : array();
 			$ids = array_values( array_unique( array_filter( $ids ) ) );
 			$ids = WPTO_Tag_Lock::filter_unlocked( $ids );
 
@@ -460,10 +467,11 @@ class WPTO_Admin_Page {
 
 		<h2 id="wpto-section-all-tags"><?php esc_html_e( 'All tags', 'smart-tags-optimizer' ); ?></h2>
 		<?php self::render_quick_sort_links(); ?>
+		<?php self::render_hide_locked_filter(); ?>
 		<?php
 		$table->prepare_items();
 		?>
-		<form method="post" id="wpto-tags-filter">
+		<form method="get" id="wpto-tags-filter">
 			<input type="hidden" name="page" value="<?php echo esc_attr( self::MAIN_SLUG ); ?>" />
 			<input type="hidden" name="tab" value="stats" />
 			<?php $current_bucket = self::get_active_bucket(); ?>
@@ -922,6 +930,46 @@ class WPTO_Admin_Page {
 		return $user_id ? get_user_meta( $user_id, 'wpto_tags_bucket', true ) : '';
 	}
 
+	/**
+	 * Whether the "All tags" table should hide locked tags, mirroring
+	 * get_active_bucket()'s persistence: an explicit submission of the
+	 * "Hide locked tags" checkbox (tracked via the wpto_hide_locked_submitted
+	 * sentinel, since an unchecked checkbox sends no value at all) is saved
+	 * and remembered across visits; defaults to true (hidden) when never set.
+	 */
+	public static function get_hide_locked_tags() {
+		$user_id = get_current_user_id();
+
+		if ( isset( $_REQUEST['wpto_hide_locked_submitted'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$hide_locked = isset( $_REQUEST['wpto_hide_locked'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
+			if ( $user_id ) {
+				update_user_meta( $user_id, 'wpto_tags_hide_locked', $hide_locked ? '1' : '0' );
+			}
+
+			return $hide_locked;
+		}
+
+		$stored = $user_id ? get_user_meta( $user_id, 'wpto_tags_hide_locked', true ) : '';
+
+		return '0' !== $stored;
+	}
+
+	private static function render_hide_locked_filter() {
+		$hide_locked = self::get_hide_locked_tags();
+		?>
+		<form method="get" class="wpto-hide-locked-filter">
+			<input type="hidden" name="page" value="<?php echo esc_attr( self::MAIN_SLUG ); ?>" />
+			<input type="hidden" name="tab" value="stats" />
+			<input type="hidden" name="wpto_hide_locked_submitted" value="1" />
+			<label>
+				<input type="checkbox" id="wpto-hide-locked" name="wpto_hide_locked" value="1" <?php checked( $hide_locked ); ?> onchange="this.form.submit()" />
+				<?php esc_html_e( 'Hide locked tags', 'smart-tags-optimizer' ); ?>
+			</label>
+		</form>
+		<?php
+	}
+
 	private static function render_usage_histogram() {
 		$terms = get_terms(
 			array(
@@ -1022,11 +1070,11 @@ class WPTO_Admin_Page {
 		}
 
 		$bulk_action = '';
-		// phpcs:disable WordPress.Security.NonceVerification.Missing -- the bulk action name itself; process_bulk_delete() verifies the nonce via check_admin_referer() before acting on it.
-		if ( isset( $_POST['action'] ) && '-1' !== $_POST['action'] ) {
-			$bulk_action = sanitize_key( $_POST['action'] );
-		} elseif ( isset( $_POST['action2'] ) && '-1' !== $_POST['action2'] ) {
-			$bulk_action = sanitize_key( $_POST['action2'] );
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- the bulk action name itself; process_bulk_delete()/process_bulk_toggle_lock() verify the nonce via check_admin_referer() before acting on it. The "All tags" filter form is a GET request, so the submitted action arrives via $_REQUEST.
+		if ( isset( $_REQUEST['action'] ) && '-1' !== $_REQUEST['action'] ) {
+			$bulk_action = sanitize_key( $_REQUEST['action'] );
+		} elseif ( isset( $_REQUEST['action2'] ) && '-1' !== $_REQUEST['action2'] ) {
+			$bulk_action = sanitize_key( $_REQUEST['action2'] );
 		}
 		// phpcs:enable
 
@@ -1205,7 +1253,8 @@ class WPTO_Admin_Page {
 	private static function process_bulk_delete() {
 		check_admin_referer( 'bulk-tags' );
 
-		$ids = isset( $_POST['tag_id'] ) ? array_map( 'absint', (array) $_POST['tag_id'] ) : array();
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified above via check_admin_referer(); the "All tags" filter form is a GET request so tag_id[] arrives via $_REQUEST.
+		$ids = isset( $_REQUEST['tag_id'] ) ? array_map( 'absint', (array) $_REQUEST['tag_id'] ) : array();
 		$ids = array_values( array_unique( array_filter( $ids ) ) );
 		$ids = WPTO_Tag_Lock::filter_unlocked( $ids );
 
@@ -1240,7 +1289,8 @@ class WPTO_Admin_Page {
 	private static function process_bulk_toggle_lock( $locked ) {
 		check_admin_referer( 'bulk-tags' );
 
-		$ids = isset( $_POST['tag_id'] ) ? array_map( 'absint', (array) $_POST['tag_id'] ) : array();
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified above via check_admin_referer(); the "All tags" filter form is a GET request so tag_id[] arrives via $_REQUEST.
+		$ids = isset( $_REQUEST['tag_id'] ) ? array_map( 'absint', (array) $_REQUEST['tag_id'] ) : array();
 		$ids = array_values( array_unique( array_filter( $ids ) ) );
 
 		$redirect_args = array(
@@ -1365,6 +1415,81 @@ class WPTO_Admin_Page {
 				'slug' => $term->slug,
 			)
 		);
+	}
+
+	public static function ajax_toggle_lock() {
+		check_ajax_referer( 'wpto_admin_action', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'smart-tags-optimizer' ) ), 403 );
+		}
+
+		$tag_id = isset( $_POST['tag_id'] ) ? absint( $_POST['tag_id'] ) : 0;
+
+		if ( ! $tag_id || ! term_exists( $tag_id, 'post_tag' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Tag not found.', 'smart-tags-optimizer' ) ) );
+		}
+
+		$locked = ! WPTO_Tag_Lock::is_locked( $tag_id );
+		WPTO_Tag_Lock::set_locked( $tag_id, $locked );
+
+		wp_send_json_success( array( 'locked' => $locked ) );
+	}
+
+	public static function ajax_bulk_lock() {
+		check_ajax_referer( 'wpto_admin_action', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'smart-tags-optimizer' ) ), 403 );
+		}
+
+		$ids    = isset( $_POST['tag_id'] ) ? array_map( 'absint', (array) $_POST['tag_id'] ) : array();
+		$ids    = array_values( array_unique( array_filter( $ids ) ) );
+		$locked = isset( $_POST['locked'] ) && '1' === $_POST['locked'];
+
+		if ( empty( $ids ) ) {
+			wp_send_json_error( array( 'message' => __( 'No tags selected.', 'smart-tags-optimizer' ) ) );
+		}
+
+		foreach ( $ids as $id ) {
+			WPTO_Tag_Lock::set_locked( $id, $locked );
+		}
+
+		wp_send_json_success(
+			array(
+				'ids'    => $ids,
+				'locked' => $locked,
+			)
+		);
+	}
+
+	public static function ajax_delete_tags() {
+		check_ajax_referer( 'wpto_admin_action', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'smart-tags-optimizer' ) ), 403 );
+		}
+
+		$ids = isset( $_POST['tag_id'] ) ? array_map( 'absint', (array) $_POST['tag_id'] ) : array();
+		$ids = array_values( array_unique( array_filter( $ids ) ) );
+		$ids = WPTO_Tag_Lock::filter_unlocked( $ids );
+
+		if ( empty( $ids ) ) {
+			wp_send_json_error( array( 'message' => __( 'No tags could be deleted.', 'smart-tags-optimizer' ) ) );
+		}
+
+		$deleted = array();
+		foreach ( $ids as $id ) {
+			if ( true === wp_delete_term( $id, 'post_tag' ) ) {
+				$deleted[] = $id;
+			}
+		}
+
+		if ( empty( $deleted ) ) {
+			wp_send_json_error( array( 'message' => __( 'The tag(s) could not be deleted.', 'smart-tags-optimizer' ) ) );
+		}
+
+		wp_send_json_success( array( 'ids' => $deleted ) );
 	}
 
 	public static function ajax_suggestion_action() {

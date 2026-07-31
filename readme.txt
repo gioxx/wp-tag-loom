@@ -5,7 +5,7 @@ Tags: tags, ai, claude, taxonomy, cleanup
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.22.2
+Stable tag: 0.23.0
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,11 @@ It's kept in a "Rejected suggestions" list and can be restored to pending at any
 Yes, the "Unused tags" table lists them with a bulk delete option.
 
 == Changelog ==
+= 0.23.0 =
+* Added a "Hide locked tags" checkbox to the "All tags" table, checked by default.
+* Fixed the "All tags" table losing an active search/sort/bucket filter when paging past page 1.
+* Converted single-row lock toggle, single-row delete, and the Lock/Unlock/Delete bulk actions on the "All tags" table to Ajax, so they no longer reload the page or drop the current search/sort/pagination state.
+
 = 0.22.2 =
 * Removed the duplicate lock icon shown under the checkbox on locked rows; the "Lock" column icon alone now shows state (red closed lock = locked, gray open lock = unlocked).
 

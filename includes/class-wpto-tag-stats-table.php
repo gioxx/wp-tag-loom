@@ -80,9 +80,10 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 			: __( 'Lock this tag (protects it from merging and deletion)', 'smart-tags-optimizer' );
 
 		return sprintf(
-			'<a href="%s" class="wpto-toggle-lock %s" aria-label="%s" title="%s"><span class="dashicons %s"></span></a>',
+			'<a href="%s" class="wpto-toggle-lock %s" data-id="%d" aria-label="%s" title="%s"><span class="dashicons %s"></span></a>',
 			esc_url( $toggle_url ),
 			$locked ? 'wpto-toggle-lock--locked' : 'wpto-toggle-lock--unlocked',
+			$item['id'],
 			esc_attr( $label ),
 			esc_attr( $label ),
 			$locked ? 'dashicons-lock' : 'dashicons-unlock'
@@ -124,10 +125,13 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 		);
 
 		if ( ! WPTO_Tag_Lock::is_locked( $item['id'] ) ) {
+			// No inline onclick confirm here: the "wpto-delete-tag" JS handler
+			// confirms and deletes via Ajax, falling back to this plain nonce'd
+			// link (no confirmation) if JS is unavailable.
 			$row_actions['delete'] = sprintf(
-				'<a href="%s" class="submitdelete" onclick="return confirm(\'%s\');">%s</a>',
+				'<a href="%s" class="submitdelete wpto-delete-tag" data-id="%d">%s</a>',
 				esc_url( $delete_url ),
-				esc_js( __( 'Delete this tag? This cannot be undone.', 'smart-tags-optimizer' ) ),
+				$item['id'],
 				esc_html__( 'Delete', 'smart-tags-optimizer' )
 			);
 		}
@@ -225,11 +229,19 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 		// usage stats, so don't hide 0-count tags in that case.
 		$hide_empty = '' === $search;
 
+		// Locked tags have no core alternative to filter out; unlocked ones have
+		// no wpto_locked term meta at all (set_locked() deletes it on unlock),
+		// so "not locked" is simply "meta doesn't exist".
+		$meta_query = WPTO_Admin_Page::get_hide_locked_tags()
+			? array( array( 'key' => WPTO_Tag_Lock::META_KEY, 'compare' => 'NOT EXISTS' ) )
+			: array();
+
 		$total_items = (int) wp_count_terms(
 			array(
 				'taxonomy'   => 'post_tag',
 				'hide_empty' => $hide_empty,
 				'search'     => $search,
+				'meta_query' => $meta_query,
 			)
 		);
 
@@ -242,6 +254,7 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 				'order'      => $order,
 				'number'     => $per_page,
 				'offset'     => ( $current_page - 1 ) * $per_page,
+				'meta_query' => $meta_query,
 			)
 		);
 
