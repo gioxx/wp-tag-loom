@@ -372,6 +372,7 @@ class WPTO_Admin_Page {
 
 			$ids = isset( $_POST['tag_id'] ) ? array_map( 'absint', (array) $_POST['tag_id'] ) : array();
 			$ids = array_values( array_unique( array_filter( $ids ) ) );
+			$ids = WPTO_Tag_Lock::filter_unlocked( $ids );
 
 			if ( ! empty( $ids ) ) {
 				self::add_to_merge_basket( $ids );
@@ -631,9 +632,44 @@ class WPTO_Admin_Page {
 				<p><?php esc_html_e( 'The tag could not be deleted. Please try again.', 'smart-tags-optimizer' ); ?></p>
 			</div>
 			<?php
+		} elseif ( isset( $_GET['wpto_locked'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$count = absint( $_GET['wpto_locked'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			?>
+			<div class="notice notice-success is-dismissible">
+				<p>
+					<?php
+					echo esc_html(
+						sprintf(
+							/* translators: %d: number of locked tags */
+							_n( '%d tag locked.', '%d tags locked.', $count, 'smart-tags-optimizer' ),
+							$count
+						)
+					);
+					?>
+				</p>
+			</div>
+			<?php
+		} elseif ( isset( $_GET['wpto_unlocked'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$count = absint( $_GET['wpto_unlocked'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			?>
+			<div class="notice notice-success is-dismissible">
+				<p>
+					<?php
+					echo esc_html(
+						sprintf(
+							/* translators: %d: number of unlocked tags */
+							_n( '%d tag unlocked.', '%d tags unlocked.', $count, 'smart-tags-optimizer' ),
+							$count
+						)
+					);
+					?>
+				</p>
+			</div>
+			<?php
 		} elseif ( isset( $_GET['wpto_tags_added'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$added     = absint( $_GET['wpto_tags_added'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$not_found = isset( $_GET['wpto_tags_not_found'] ) ? sanitize_text_field( wp_unslash( $_GET['wpto_tags_not_found'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$locked    = isset( $_GET['wpto_tags_locked'] ) ? sanitize_text_field( wp_unslash( $_GET['wpto_tags_locked'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 			if ( $added > 0 ) :
 				?>
@@ -668,6 +704,22 @@ class WPTO_Admin_Page {
 				</div>
 				<?php
 			endif;
+
+			if ( '' !== $locked ) :
+				?>
+				<div class="notice notice-warning is-dismissible">
+					<p>
+						<?php
+						printf(
+							/* translators: %s: comma-separated list of locked tag names */
+							esc_html__( 'Skipped locked tag(s): %s', 'smart-tags-optimizer' ),
+							esc_html( $locked )
+						);
+						?>
+					</p>
+				</div>
+				<?php
+			endif;
 		}
 
 		self::strip_notice_query_args();
@@ -679,7 +731,7 @@ class WPTO_Admin_Page {
 	 * page refresh doesn't keep re-showing a dismissed notice.
 	 */
 	private static function strip_notice_query_args() {
-		$notice_args = array( 'wpto_merged', 'wpto_merged_target', 'wpto_merged_count', 'wpto_merge_error', 'wpto_deleted', 'wpto_delete_error', 'wpto_tags_added', 'wpto_tags_not_found' );
+		$notice_args = array( 'wpto_merged', 'wpto_merged_target', 'wpto_merged_count', 'wpto_merge_error', 'wpto_deleted', 'wpto_delete_error', 'wpto_locked', 'wpto_unlocked', 'wpto_tags_added', 'wpto_tags_not_found', 'wpto_tags_locked' );
 
 		$present = array_filter(
 			$notice_args,
@@ -980,6 +1032,10 @@ class WPTO_Admin_Page {
 
 		if ( 'delete' === $bulk_action ) {
 			self::process_bulk_delete();
+		} elseif ( 'lock' === $bulk_action ) {
+			self::process_bulk_toggle_lock( true );
+		} elseif ( 'unlock' === $bulk_action ) {
+			self::process_bulk_toggle_lock( false );
 		}
 	}
 
@@ -1000,9 +1056,10 @@ class WPTO_Admin_Page {
 			exit;
 		}
 
-		$seen        = array();
-		$matched_ids = array();
-		$not_found   = array();
+		$seen         = array();
+		$matched_ids  = array();
+		$not_found    = array();
+		$locked_names = array();
 
 		foreach ( $names as $name ) {
 			$key = strtolower( $name );
@@ -1014,7 +1071,13 @@ class WPTO_Admin_Page {
 			$term = get_term_by( 'name', $name, 'post_tag' );
 
 			if ( $term && ! is_wp_error( $term ) ) {
-				$matched_ids[] = (int) $term->term_id;
+				$term_id = (int) $term->term_id;
+
+				if ( WPTO_Tag_Lock::is_locked( $term_id ) ) {
+					$locked_names[] = $name;
+				} else {
+					$matched_ids[] = $term_id;
+				}
 			} else {
 				$not_found[] = $name;
 			}
@@ -1028,6 +1091,10 @@ class WPTO_Admin_Page {
 
 		if ( ! empty( $not_found ) ) {
 			$redirect_args['wpto_tags_not_found'] = rawurlencode( implode( ', ', $not_found ) );
+		}
+
+		if ( ! empty( $locked_names ) ) {
+			$redirect_args['wpto_tags_locked'] = rawurlencode( implode( ', ', $locked_names ) );
 		}
 
 		wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'edit.php' ) ) );
@@ -1165,6 +1232,27 @@ class WPTO_Admin_Page {
 		} else {
 			$redirect_args['wpto_delete_error'] = 1;
 		}
+
+		wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'edit.php' ) ) );
+		exit;
+	}
+
+	private static function process_bulk_toggle_lock( $locked ) {
+		check_admin_referer( 'bulk-tags' );
+
+		$ids = isset( $_POST['tag_id'] ) ? array_map( 'absint', (array) $_POST['tag_id'] ) : array();
+		$ids = array_values( array_unique( array_filter( $ids ) ) );
+
+		$redirect_args = array(
+			'page' => self::MAIN_SLUG,
+			'tab'  => 'stats',
+		);
+
+		foreach ( $ids as $id ) {
+			WPTO_Tag_Lock::set_locked( $id, $locked );
+		}
+
+		$redirect_args[ $locked ? 'wpto_locked' : 'wpto_unlocked' ] = count( $ids );
 
 		wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'edit.php' ) ) );
 		exit;

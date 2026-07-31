@@ -5,7 +5,7 @@ Tags: tags, ai, claude, taxonomy, cleanup
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.22.0
+Stable tag: 0.22.1
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,6 +43,10 @@ It's kept in a "Rejected suggestions" list and can be restored to pending at any
 Yes, the "Unused tags" table lists them with a bulk delete option.
 
 == Changelog ==
+= 0.22.1 =
+* Added "Lock"/"Unlock" bulk actions to the "All tags" table's Bulk actions dropdown, and made locked tags checkbox-selectable again (only for this purpose) so they can be picked for bulk unlock.
+* Fixed the "add tags by name" and bulk "add to merge selection" flows silently dropping locked tags from the merge basket while still counting them as added; they're now excluded from the count and listed in a "Skipped locked tag(s)" notice.
+
 = 0.22.0 =
 * Added a "Lock" column to the "All tags" table: locking a tag prevents it from being checkbox-selected, merged (manually or via an approved AI suggestion), or deleted, until unlocked.
 * Labeled the "AI Analysis" tab as "(experimental)".

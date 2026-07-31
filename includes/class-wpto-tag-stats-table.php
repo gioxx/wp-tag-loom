@@ -41,6 +41,8 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 	protected function get_bulk_actions() {
 		return array(
 			'add_to_merge' => __( 'Add to merge selection', 'smart-tags-optimizer' ),
+			'lock'         => __( 'Lock', 'smart-tags-optimizer' ),
+			'unlock'       => __( 'Unlock', 'smart-tags-optimizer' ),
 			'delete'       => __( 'Delete', 'smart-tags-optimizer' ),
 		);
 	}
@@ -50,15 +52,20 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 	}
 
 	public function column_cb( $item ) {
+		$checkbox = sprintf( '<input type="checkbox" name="tag_id[]" value="%d" />', $item['id'] );
+
 		if ( WPTO_Tag_Lock::is_locked( $item['id'] ) ) {
-			return sprintf(
+			// Locked tags stay selectable so they can be picked for the "Unlock"
+			// bulk action; destructive bulk actions (delete, add to merge) still
+			// drop locked ids server-side via WPTO_Tag_Lock::filter_unlocked().
+			return $checkbox . sprintf(
 				'<span class="dashicons dashicons-lock" aria-label="%s" title="%s"></span>',
-				esc_attr__( 'Locked — cannot be selected', 'smart-tags-optimizer' ),
-				esc_attr__( 'Locked — cannot be selected', 'smart-tags-optimizer' )
+				esc_attr__( 'Locked', 'smart-tags-optimizer' ),
+				esc_attr__( 'Locked', 'smart-tags-optimizer' )
 			);
 		}
 
-		return sprintf( '<input type="checkbox" name="tag_id[]" value="%d" />', $item['id'] );
+		return $checkbox;
 	}
 
 	public function column_lock( $item ) {

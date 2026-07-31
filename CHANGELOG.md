@@ -2,6 +2,11 @@
 
 All notable changes to this plugin are documented in this file.
 
+## [0.22.1] - 2026-07-31
+
+- Added "Lock"/"Unlock" bulk actions to the "All tags" table's Bulk actions dropdown. Locked tags are checkbox-selectable again (previously hidden entirely) so they can be picked for a bulk unlock; destructive bulk actions (delete, add to merge) still drop locked ids server-side via `WPTO_Tag_Lock::filter_unlocked()`.
+- Fixed `process_add_tags_by_name()` and the bulk "add to merge selection" action counting locked tags as added to the merge basket, when `add_to_merge_basket()` was actually silently filtering them out. Locked tags are now excluded from the "added" count up front and surfaced in a separate "Skipped locked tag(s)" notice.
+
 ## [0.22.0] - 2026-07-30
 
 - Added a lock toggle to the "All tags" table (new "Lock" column): a locked tag can't be selected via checkbox, can't be added to the merge basket (manually or by an approved AI suggestion), and can't be deleted, until unlocked again. Backed by term meta (`wpto_locked`), cleaned up on uninstall when "Remove all plugin settings and export data" is enabled.
