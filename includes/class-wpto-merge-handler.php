@@ -22,9 +22,9 @@ class WPTO_Merge_Handler {
 			return new WP_Error( 'wpto_missing_target', __( 'The target tag no longer exists.', 'smart-tags-optimizer' ) );
 		}
 
-		if ( WPTO_Tag_Lock::is_locked( $target_id ) ) {
-			return new WP_Error( 'wpto_locked_target', __( 'The target tag is locked and cannot be used in a merge.', 'smart-tags-optimizer' ) );
-		}
+		// A locked target is safe: it always survives a merge (only source
+		// tags get deleted), so there's nothing for the lock to protect it
+		// from here. Locked *sources* are still skipped below.
 
 		$source_ids = json_decode( $suggestion['source_term_ids'], true );
 

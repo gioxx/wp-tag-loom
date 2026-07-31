@@ -379,7 +379,10 @@ class WPTO_Admin_Page {
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified above via check_admin_referer(); the "All tags" filter form is a GET request so tag_id[] arrives via $_REQUEST.
 			$ids = isset( $_REQUEST['tag_id'] ) ? array_map( 'absint', (array) $_REQUEST['tag_id'] ) : array();
 			$ids = array_values( array_unique( array_filter( $ids ) ) );
-			$ids = WPTO_Tag_Lock::filter_unlocked( $ids );
+			// Locked tags are allowed into the merge basket: they can safely be
+			// picked as the merge *target* (which always survives), and if left
+			// as a source instead, WPTO_Merge_Handler::apply() already skips
+			// locked sources rather than deleting them.
 
 			if ( ! empty( $ids ) ) {
 				self::add_to_merge_basket( $ids );
@@ -677,7 +680,6 @@ class WPTO_Admin_Page {
 		} elseif ( isset( $_GET['wpto_tags_added'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$added     = absint( $_GET['wpto_tags_added'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$not_found = isset( $_GET['wpto_tags_not_found'] ) ? sanitize_text_field( wp_unslash( $_GET['wpto_tags_not_found'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			$locked    = isset( $_GET['wpto_tags_locked'] ) ? sanitize_text_field( wp_unslash( $_GET['wpto_tags_locked'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 			if ( $added > 0 ) :
 				?>
@@ -712,22 +714,6 @@ class WPTO_Admin_Page {
 				</div>
 				<?php
 			endif;
-
-			if ( '' !== $locked ) :
-				?>
-				<div class="notice notice-warning is-dismissible">
-					<p>
-						<?php
-						printf(
-							/* translators: %s: comma-separated list of locked tag names */
-							esc_html__( 'Skipped locked tag(s): %s', 'smart-tags-optimizer' ),
-							esc_html( $locked )
-						);
-						?>
-					</p>
-				</div>
-				<?php
-			endif;
 		}
 
 		self::strip_notice_query_args();
@@ -739,7 +725,7 @@ class WPTO_Admin_Page {
 	 * page refresh doesn't keep re-showing a dismissed notice.
 	 */
 	private static function strip_notice_query_args() {
-		$notice_args = array( 'wpto_merged', 'wpto_merged_target', 'wpto_merged_count', 'wpto_merge_error', 'wpto_deleted', 'wpto_delete_error', 'wpto_locked', 'wpto_unlocked', 'wpto_tags_added', 'wpto_tags_not_found', 'wpto_tags_locked' );
+		$notice_args = array( 'wpto_merged', 'wpto_merged_target', 'wpto_merged_count', 'wpto_merge_error', 'wpto_deleted', 'wpto_delete_error', 'wpto_locked', 'wpto_unlocked', 'wpto_tags_added', 'wpto_tags_not_found' );
 
 		$present = array_filter(
 			$notice_args,
@@ -779,7 +765,10 @@ class WPTO_Admin_Page {
 
 		foreach ( $ids as $id ) {
 			$term = get_term( $id, 'post_tag' );
-			if ( $term && ! is_wp_error( $term ) && ! WPTO_Tag_Lock::is_locked( $id ) ) {
+			// Locked tags stay in the basket: they're safe as a merge target
+			// (survives) and protected as a source (WPTO_Merge_Handler::apply()
+			// skips locked sources instead of deleting them).
+			if ( $term && ! is_wp_error( $term ) ) {
 				$terms[]     = $term;
 				$valid_ids[] = $id;
 			}
@@ -799,7 +788,7 @@ class WPTO_Admin_Page {
 			return;
 		}
 
-		$ids      = WPTO_Tag_Lock::filter_unlocked( array_map( 'absint', $ids ) );
+		$ids      = array_map( 'absint', $ids );
 		$existing = array_map( 'absint', (array) get_user_meta( $user_id, 'wpto_merge_basket', true ) );
 		$merged   = array_values( array_unique( array_merge( $existing, $ids ) ) );
 
@@ -1104,10 +1093,9 @@ class WPTO_Admin_Page {
 			exit;
 		}
 
-		$seen         = array();
-		$matched_ids  = array();
-		$not_found    = array();
-		$locked_names = array();
+		$seen        = array();
+		$matched_ids = array();
+		$not_found   = array();
 
 		foreach ( $names as $name ) {
 			$key = strtolower( $name );
@@ -1119,13 +1107,9 @@ class WPTO_Admin_Page {
 			$term = get_term_by( 'name', $name, 'post_tag' );
 
 			if ( $term && ! is_wp_error( $term ) ) {
-				$term_id = (int) $term->term_id;
-
-				if ( WPTO_Tag_Lock::is_locked( $term_id ) ) {
-					$locked_names[] = $name;
-				} else {
-					$matched_ids[] = $term_id;
-				}
+				// Locked tags are allowed in: they're safe as a merge target
+				// (survives) and protected as a source at apply time.
+				$matched_ids[] = (int) $term->term_id;
 			} else {
 				$not_found[] = $name;
 			}
@@ -1139,10 +1123,6 @@ class WPTO_Admin_Page {
 
 		if ( ! empty( $not_found ) ) {
 			$redirect_args['wpto_tags_not_found'] = rawurlencode( implode( ', ', $not_found ) );
-		}
-
-		if ( ! empty( $locked_names ) ) {
-			$redirect_args['wpto_tags_locked'] = rawurlencode( implode( ', ', $locked_names ) );
 		}
 
 		wp_safe_redirect( add_query_arg( $redirect_args, admin_url( 'edit.php' ) ) );

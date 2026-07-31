@@ -2,6 +2,10 @@
 
 All notable changes to this plugin are documented in this file.
 
+## [0.23.2] - 2026-07-31
+
+- Fixed locked tags being unable to enter the merge selection at all, even as the merge *target* (which always survives a merge — only source tags get deleted). Removed the lock filtering from `add_to_merge_basket()` and `get_merge_basket_terms()` in `includes/class-wpto-admin-page.php`, from `process_add_tags_by_name()` (dropping its "Skipped locked tag(s)" notice), and removed `WPTO_Merge_Handler::apply()`'s rejection of a locked target. Locked tags remain fully protected as a merge *source*: `apply()` still skips them there instead of deleting them.
+
 ## [0.23.1] - 2026-07-31
 
 - Fixed the "All tags" bulk actions (Lock/Unlock/Delete) showing WordPress core's "Please select a bulk action to perform." alert even though the action had actually run. The Ajax submit handler in `assets/admin.js` was resetting the action `<select>`s back to `-1` synchronously, before WP core's own submit-time bulk-action validation (bound to the same form) had a chance to read the selected value; deferred the reset via `setTimeout` so it happens after the current submit event has fully finished.
