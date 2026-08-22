@@ -3,9 +3,9 @@ Contributors: gioxx
 GitHub Plugin URI: https://github.com/gioxx/wp-smart-tags
 Tags: tags, ai, claude, taxonomy, cleanup
 Requires at least: 6.0
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.23.2
+Stable tag: 0.23.3
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,8 +23,11 @@ Features:
 * Unused tag detection (0 posts) with a bulk delete and a "recount tag counts" tool to fix drifted counts
 * Configurable AI model, batch size, and response language for Claude's suggestion "reason" text, independent of the plugin's own UI language
 * "Test API key" button to verify the Anthropic API key before saving
-* English by default, with an included Italian translation
+* English by default; translatable via WordPress.org's translation platform (translate.wordpress.org)
 * Git Updater compatible for seamless updates from GitHub
+
+= Third-party service =
+The "AI Analysis" tab uses the Anthropic Claude API, an external service provided by Anthropic PBC, to review your tag names for near-duplicates, semantic overlaps, and low-usage merge candidates. This only happens when you have entered your own Anthropic API key in Settings and click "Start analysis": the plugin then sends batches of tag names and their post counts (no post content, no personal data) to api.anthropic.com and stores Claude's suggestions for your review. Nothing is sent automatically, on activation, or in the background, and the entire "Manage Tags" tab (search, merge, delete, unused-tag cleanup) works without ever contacting Anthropic. See [Anthropic's Privacy Policy](https://www.anthropic.com/legal/privacy) and [Terms of Service](https://www.anthropic.com/legal/consumer-terms).
 
 == Installation ==
 1. Copy the whole plugin folder to `wp-content/plugins/smart-tags-optimizer/`.
@@ -43,6 +46,12 @@ It's kept in a "Rejected suggestions" list and can be restored to pending at any
 Yes, the "Unused tags" table lists them with a bulk delete option.
 
 == Changelog ==
+= 0.23.3 =
+* Fixed the "All tags" table staying empty after an Ajax action removed every row on the current page; it now auto-reloads.
+* WordPress.org Plugin Check cleanup ahead of the directory submission (readme header, nonce-verification and DB-query sniff comments, dropped unused Domain Path header).
+* Added the WordPress.org-required "Third-party service" disclosure to the readme's Description, and a matching note next to the Anthropic API Key field in Settings: what's sent, when, and links to Anthropic's Privacy Policy and Terms of Service.
+* Corrected stale "included Italian translation" claims in `readme.txt`, `README.md`, and `README.it.md`: no `.mo`/`.po` files are bundled anymore (WordPress.org directory guidelines require translations through translate.wordpress.org instead).
+
 = 0.23.2 =
 * Fixed locked tags being unable to enter the merge selection at all, even as the merge target (which always survives — only source tags get deleted). Locked tags remain fully protected as a merge source.
 

@@ -17,7 +17,7 @@ A WordPress plugin to manage your post tags with or without AI: get Claude (Anth
 
 ## Language
 
-The plugin interface is in English by default; if your WordPress is set to Italian (`it_IT`), the plugin automatically loads the included Italian translation (`languages/ai-tags-optimizer-it_IT.mo`). This is independent from the language Claude uses when writing the "reason" for each suggestion, which is configured separately in Settings.
+The plugin interface is in English by default. Translations (including Italian) are handled via [translate.wordpress.org](https://translate.wordpress.org/) rather than bundled with the plugin. This is independent from the language Claude uses when writing the "reason" for each suggestion, which is configured separately in Settings.
 
 ## Configuration
 

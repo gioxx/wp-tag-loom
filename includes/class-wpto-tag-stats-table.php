@@ -236,6 +236,7 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 			? array( array( 'key' => WPTO_Tag_Lock::META_KEY, 'compare' => 'NOT EXISTS' ) )
 			: array();
 
+		// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- filters the tags list table by the plugin's own single term meta key, on the small post_tag taxonomy.
 		$total_items = (int) wp_count_terms(
 			array(
 				'taxonomy'   => 'post_tag',
@@ -257,6 +258,7 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 				'meta_query' => $meta_query,
 			)
 		);
+		// phpcs:enable
 
 		if ( $range_filter ) {
 			remove_filter( 'terms_clauses', $range_filter );

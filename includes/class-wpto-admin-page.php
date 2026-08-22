@@ -1059,7 +1059,7 @@ class WPTO_Admin_Page {
 		}
 
 		$bulk_action = '';
-		// phpcs:disable WordPress.Security.NonceVerification.Missing -- the bulk action name itself; process_bulk_delete()/process_bulk_toggle_lock() verify the nonce via check_admin_referer() before acting on it. The "All tags" filter form is a GET request, so the submitted action arrives via $_REQUEST.
+		// phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended -- the bulk action name itself; process_bulk_delete()/process_bulk_toggle_lock() verify the nonce via check_admin_referer() before acting on it. The "All tags" filter form is a GET request, so the submitted action arrives via $_REQUEST.
 		if ( isset( $_REQUEST['action'] ) && '-1' !== $_REQUEST['action'] ) {
 			$bulk_action = sanitize_key( $_REQUEST['action'] );
 		} elseif ( isset( $_REQUEST['action2'] ) && '-1' !== $_REQUEST['action2'] ) {

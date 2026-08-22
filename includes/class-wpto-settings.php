@@ -143,6 +143,15 @@ class WPTO_Settings {
 							<input type="password" id="wpto_api_key" name="wpto_api_key" value="<?php echo esc_attr( self::get_api_key() ); ?>" class="regular-text" autocomplete="off" />
 							<button type="button" class="button" id="wpto-test-api-key"><?php esc_html_e( 'Test API key', 'smart-tags-optimizer' ); ?></button>
 							<span id="wpto-test-api-key-result"></span>
+							<p class="description">
+								<?php
+								printf(
+									/* translators: %s: link to Anthropic's privacy policy */
+									esc_html__( 'Required only for the "AI Analysis" tab. Tag names and usage counts are sent to the Anthropic Claude API (%s) solely when you click "Start analysis" there; nothing is sent automatically, and the "Manage Tags" tab works fully offline without a key.', 'smart-tags-optimizer' ),
+									'<a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener noreferrer">anthropic.com</a>'
+								);
+								?>
+							</p>
 						</td>
 					</tr>
 					<tr>

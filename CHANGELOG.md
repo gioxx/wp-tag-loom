@@ -4,7 +4,12 @@ All notable changes to this plugin are documented in this file.
 
 ## [Unreleased]
 
+## [0.23.3] - 2026-08-22
+
 - Fixed the "All tags" table staying empty after an Ajax action (bulk delete, or lock/hide with "Hide locked tags" on) removed every row on the current page: pagination and item counts went stale until a manual refresh or page change. Added `reloadIfTableEmpty()` in `assets/admin.js`, which auto-reloads the page once no `wpto-tag-row-*` row is left after a delete or lock-triggered hide.
+- WordPress.org Plugin Check cleanup ahead of the directory submission: bumped `readme.txt`'s "Tested up to" to 7.1, dropped the `Domain Path` header (no `/languages` folder ships, and translations load automatically for WP.org-hosted plugins), tightened the nonce-verification `phpcs:disable` in `class-wpto-admin-page.php`'s bulk-action dispatch to also cover the `.Recommended` sniff, fixed a mismatched `phpcs:ignore` sniff code in `uninstall.php`, and added a `phpcs:disable`/`enable` around the intentional `meta_query` usage in `class-wpto-tag-stats-table.php::prepare_items()`.
+- Added the WordPress.org-required third-party-service disclosure ahead of directory submission: a "Third-party service" paragraph in `readme.txt`'s Description explaining what's sent to the Anthropic Claude API, when, and linking to Anthropic's Privacy Policy and Terms of Service, plus a matching `<p class="description">` note next to the Anthropic API Key field in `class-wpto-settings.php`'s Settings page.
+- Corrected stale "included Italian translation" claims in `readme.txt` (feature list), `README.md`, and `README.it.md` — no `.mo`/`.po` files ship with the plugin anymore since 0.22.0; WordPress.org requires directory-submitted plugins to be translated via translate.wordpress.org instead of bundling translation files.
 
 ## [0.23.2] - 2026-07-31
 

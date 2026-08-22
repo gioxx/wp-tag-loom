@@ -17,7 +17,7 @@ Un plugin WordPress per gestire i tag dei tuoi articoli con o senza IA: ottieni 
 
 ## Lingua
 
-L'interfaccia del plugin è in inglese di default; se il tuo WordPress è impostato in italiano (`it_IT`), il plugin carica automaticamente la traduzione italiana inclusa (`languages/ai-tags-optimizer-it_IT.mo`). Questo è indipendente dalla lingua che Claude usa per scrivere il "motivo" di ogni suggerimento, configurabile separatamente nelle Impostazioni.
+L'interfaccia del plugin è in inglese di default. Le traduzioni (italiano incluso) sono gestite tramite [translate.wordpress.org](https://translate.wordpress.org/) invece di essere incluse nel plugin. Questo è indipendente dalla lingua che Claude usa per scrivere il "motivo" di ogni suggerimento, configurabile separatamente nelle Impostazioni.
 
 ## Configurazione
 

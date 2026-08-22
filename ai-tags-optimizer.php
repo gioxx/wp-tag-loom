@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Smart Tags Optimizer
  * Description: Manage WordPress tags with or without AI: get Claude (Anthropic) suggestions for merging duplicates/synonyms and flagging unused tags, or search, merge, and delete tags manually. Always requires manual approval before any change.
- * Version: 0.23.2
+ * Version: 0.23.3
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Gioxx
@@ -10,7 +10,6 @@
  * Plugin URI: https://github.com/gioxx/wp-smart-tags
  * License: GPL-2.0-or-later
  * Text Domain: smart-tags-optimizer
- * Domain Path: /languages
  *
  * GitHub Plugin URI: gioxx/wp-smart-tags
  * GitHub Branch: main
@@ -22,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WPTO_VERSION', '0.23.2' );
+define( 'WPTO_VERSION', '0.23.3' );
 define( 'WPTO_PLUGIN_FILE', __FILE__ );
 define( 'WPTO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPTO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
