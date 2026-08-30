@@ -7,11 +7,11 @@
  * Requires PHP: 7.4
  * Author: Gioxx
  * Author URI: https://gioxx.org
- * Plugin URI: https://github.com/gioxx/wp-smart-tags
+ * Plugin URI: https://github.com/gioxx/wp-termcraft
  * License: GPL-2.0-or-later
  * Text Domain: termcraft
  *
- * GitHub Plugin URI: gioxx/wp-smart-tags
+ * GitHub Plugin URI: gioxx/wp-termcraft
  * GitHub Branch: main
  * GitHub Languages: true
  * Release Asset: true

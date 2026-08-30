@@ -187,7 +187,7 @@ class WPTO_Settings {
 					/* translators: 1: link to the author's site, 2: link to the plugin repository */
 					esc_html__( 'Termcraft by %1$s, source on %2$s.', 'termcraft' ),
 					'<a href="https://gioxx.org" target="_blank" rel="noopener noreferrer">Gioxx</a>',
-					'<a href="https://github.com/gioxx/wp-smart-tags" target="_blank" rel="noopener noreferrer">GitHub</a>'
+					'<a href="https://github.com/gioxx/wp-termcraft" target="_blank" rel="noopener noreferrer">GitHub</a>'
 				);
 				?>
 			</p>

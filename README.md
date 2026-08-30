@@ -57,4 +57,4 @@ The **"Manage Tags"** tab (next to "AI Analysis" on the same page) is where all 
 
 ## Updates
 
-The plugin is compatible with [Git Updater](https://git-updater.com/), so it can be kept up to date directly from the [GitHub repository](https://github.com/gioxx/wp-smart-tags) without going through WordPress.org.
+The plugin is compatible with [Git Updater](https://git-updater.com/), so it can be kept up to date directly from the [GitHub repository](https://github.com/gioxx/wp-termcraft) without going through WordPress.org.

@@ -1,6 +1,6 @@
 === Termcraft - Taxonomy Manager ===
 Contributors: gioxx
-GitHub Plugin URI: https://github.com/gioxx/wp-smart-tags
+GitHub Plugin URI: https://github.com/gioxx/wp-termcraft
 Tags: tags, taxonomy, terms, cleanup, ai
 Requires at least: 7.0
 Tested up to: 7.1
