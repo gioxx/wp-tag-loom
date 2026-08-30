@@ -1,39 +1,42 @@
-=== Smart Tags Optimizer ===
+=== Termcraft - Taxonomy Manager ===
 Contributors: gioxx
 GitHub Plugin URI: https://github.com/gioxx/wp-smart-tags
-Tags: tags, ai, claude, taxonomy, cleanup
-Requires at least: 6.0
+Tags: tags, taxonomy, terms, cleanup, ai
+Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.23.3
+Stable tag: 0.24.0
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Manage tags with or without AI: get Claude suggestions for merging duplicates and flagging unused tags, or search, merge, and delete tags manually.
+Manage tags and taxonomy terms with or without AI: merge/cleanup suggestions via WordPress core's AI Client, or search, merge, delete manually.
 
 == Description ==
-Smart Tags Optimizer sends your post tags to the Claude API (Anthropic) in batches and asks it to spot near-duplicates, semantic overlaps, and low-usage tags that could be merged into a broader existing tag. Nothing is changed automatically: every suggestion is queued for review and only applied when you approve it. Alongside the AI analysis, a "Manage Tags" tab covers manual, non-AI tag housekeeping: usage statistics, search, merge, and delete.
+Termcraft sends your post tags in batches to whichever AI provider the site owner has configured in WordPress core's AI Client, and asks it to spot near-duplicates, semantic overlaps, and low-usage tags that could be merged into a broader existing tag. Nothing is changed automatically: every suggestion is queued for review and only applied when you approve it. Alongside the AI analysis, a "Manage Tags" tab covers manual, non-AI tag housekeeping: usage statistics, search, merge, and delete.
+
+Termcraft does not ship its own AI integration or store an API key. It relies entirely on the AI Client bundled in WordPress 7.0, so it works with any provider you have set up (Anthropic, OpenAI, Google, and others) and the provider can be swapped at the site level without touching the plugin.
 
 Features:
-* Batch analysis of all tags via the Claude API, with a live processing log, progress tracking, and a stop button
+* Batch analysis of all tags through the core AI Client, with a live processing log, progress tracking, and a stop button
 * Merge suggestions grouped by type: near-duplicates, semantic overlaps, low-usage tags
 * Per-suggestion Approve/Reject/Restore, plus multi-select bulk actions (bulk approve, bulk reject, bulk restore) on each suggestions table
 * Rejected suggestions are kept (not discarded) and can be restored to pending at any time
 * A "Manage Tags" tab for non-AI tag housekeeping: a usage-distribution histogram, a searchable/sortable/paginated table of every tag in use (each linking to its filtered post list), individual or bulk tag deletion, and a manual merge tool to combine any 2+ tags regardless of naming
 * Unused tag detection (0 posts) with a bulk delete and a "recount tag counts" tool to fix drifted counts
-* Configurable AI model, batch size, and response language for Claude's suggestion "reason" text, independent of the plugin's own UI language
-* "Test API key" button to verify the Anthropic API key before saving
+* Optional model preference, configurable batch size, and a response language for the suggestion "reason" text, independent of the plugin's own UI language
+* "Check AI provider" button to confirm a provider is configured before running an analysis
 * English by default; translatable via WordPress.org's translation platform (translate.wordpress.org)
 * Git Updater compatible for seamless updates from GitHub
 
 = Third-party service =
-The "AI Analysis" tab uses the Anthropic Claude API, an external service provided by Anthropic PBC, to review your tag names for near-duplicates, semantic overlaps, and low-usage merge candidates. This only happens when you have entered your own Anthropic API key in Settings and click "Start analysis": the plugin then sends batches of tag names and their post counts (no post content, no personal data) to api.anthropic.com and stores Claude's suggestions for your review. Nothing is sent automatically, on activation, or in the background, and the entire "Manage Tags" tab (search, merge, delete, unused-tag cleanup) works without ever contacting Anthropic. See [Anthropic's Privacy Policy](https://www.anthropic.com/legal/privacy) and [Terms of Service](https://www.anthropic.com/legal/consumer-terms).
+The "AI Analysis" tab uses WordPress core's AI Client (introduced in WordPress 7.0). When you click "Start analysis", the plugin hands batches of tag names and their post counts (no post content, no personal data) to the AI Client, which forwards them to whichever AI provider the site owner has configured, and stores the returned suggestions for your review. The plugin itself contacts no external service and holds no credentials: the provider, its endpoint, and its API key are all managed by WordPress core. Nothing is sent automatically, on activation, or in the background, and the entire "Manage Tags" tab (search, merge, delete, unused-tag cleanup) works without any AI provider at all. Review the privacy policy and terms of the specific AI provider you configure.
 
 == Installation ==
-1. Copy the whole plugin folder to `wp-content/plugins/smart-tags-optimizer/`.
-2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Go to **Tools → Smart Tags Optimizer: Settings** and enter your Anthropic API key.
-4. Go to **Posts → Smart Tags** and click "Start analysis".
+1. Requires WordPress 7.0 or newer (for the bundled AI Client).
+2. Copy the whole plugin folder to `wp-content/plugins/termcraft/`.
+3. Activate the plugin through the 'Plugins' menu in WordPress.
+4. Configure an AI provider in the WordPress settings (only needed for the "AI Analysis" tab).
+5. Go to **Posts → Termcraft** and use "Manage Tags", or click "Start analysis" on the "AI Analysis" tab.
 
 == Frequently Asked Questions ==
 = Does this change my tags automatically? =
@@ -46,6 +49,13 @@ It's kept in a "Rejected suggestions" list and can be restored to pending at any
 Yes, the "Unused tags" table lists them with a bulk delete option.
 
 == Changelog ==
+= 0.24.0 =
+* Renamed the plugin from "Smart Tags Optimizer" to "Termcraft - Taxonomy Manager" (display name, slug/text domain, main file) for the WordPress.org directory review: the former name was flagged as too generic and close to an existing "Smart Tags" term.
+* Replaced the direct Anthropic Claude integration with WordPress core's AI Client (`wp_ai_client_prompt()`). The plugin no longer stores an API key or contacts any provider directly; the site owner configures a provider once in the WordPress settings and can use any supported provider.
+* Bumped the minimum WordPress version to 7.0 (the AI Client is bundled there).
+* Settings: removed the "Anthropic API Key" field; the model field is now an optional comma-separated model preference; "Test API key" is now "Check AI provider".
+* Moved the admin-notice URL cleanup from an inline `<script>` block to the enqueued admin script.
+
 = 0.23.3 =
 * Fixed the "All tags" table staying empty after an Ajax action removed every row on the current page; it now auto-reloads.
 * WordPress.org Plugin Check cleanup ahead of the directory submission (readme header, nonce-verification and DB-query sniff comments, dropped unused Domain Path header).
@@ -168,5 +178,8 @@ Yes, the "Unused tags" table lists them with a bulk delete option.
 * Initial implementation: tag analysis, merge suggestions, unused tag detection.
 
 == Upgrade Notice ==
+= 0.24.0 =
+Requires WordPress 7.0+. The plugin was renamed to Termcraft and now uses core's AI Client instead of a stored Anthropic key; configure an AI provider in WordPress settings to use the "AI Analysis" tab.
+
 = 0.5.0 =
 Plugin, folder and text domain were renamed from wp-tags-optimizer to ai-tags-optimizer; reinstall from the new plugin folder if updating manually.

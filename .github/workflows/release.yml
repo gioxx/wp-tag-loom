@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - ai-tags-optimizer.php
+      - termcraft.php
 
 permissions:
   contents: write
@@ -21,7 +21,7 @@ jobs:
       - name: Read plugin version
         id: version
         run: |
-          VERSION=$(grep -m1 '^ \* Version:' ai-tags-optimizer.php | sed -E 's/.*Version:\s*//')
+          VERSION=$(grep -m1 '^ \* Version:' termcraft.php | sed -E 's/.*Version:\s*//')
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
@@ -37,7 +37,7 @@ jobs:
       - name: Build plugin zip
         if: steps.check.outputs.exists == 'false'
         run: |
-          SLUG=smart-tags-optimizer
+          SLUG=termcraft
           STAGING="/tmp/$SLUG"
           rm -rf "$STAGING"
           mkdir -p "$STAGING"
@@ -74,6 +74,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "${{ steps.version.outputs.tag }}" \
-            "/tmp/smart-tags-optimizer-${{ steps.version.outputs.version }}.zip" \
+            "/tmp/termcraft-${{ steps.version.outputs.version }}.zip" \
             --title "${{ steps.version.outputs.tag }}" \
             --notes-file /tmp/release-notes.md

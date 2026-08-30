@@ -4,6 +4,15 @@ All notable changes to this plugin are documented in this file.
 
 ## [Unreleased]
 
+## [0.24.0] - 2026-08-30
+
+- Renamed the plugin from "Smart Tags Optimizer" to **"Termcraft - Taxonomy Manager"** in response to the WordPress.org directory review, which flagged the old name as too generic and too close to an existing "Smart Tags" term. Changed the display name (`termcraft.php` header, `readme.txt` title), the slug/text domain (`smart-tags-optimizer` → `termcraft`, ~200 `__()`/`_e()` calls across `includes/`), and renamed the main file `ai-tags-optimizer.php` → `termcraft.php` (plus the `release.yml`/`deploy.yml` path trigger, version grep, and `SLUG`). The internal `wpto_` / `WPTO_` code prefix and the `wpto-*` admin-page slugs are unchanged.
+- Replaced the direct Anthropic Claude HTTP integration in `includes/class-wpto-api-client.php` with WordPress core's AI Client (`wp_ai_client_prompt()` fluent builder: `using_system_instruction()`, `using_max_tokens()`, `using_temperature()`, `using_model_preference()`, `is_supported_for_text_generation()`, `generate_text()`). The plugin no longer performs `wp_remote_post()` to `api.anthropic.com`, stores no API key, and works with whatever provider the site owner configures in core. `analyze_batch()` now returns a `wpto_no_ai_client` / `wpto_no_ai_provider` `WP_Error` when unavailable; `WPTO_Queue::ajax_start_analysis()` checks `provider_available()` upfront.
+- Bumped `Requires at least` to **7.0** (the AI Client ships in WordPress 7.0).
+- `class-wpto-settings.php`: removed the `wpto_api_key` setting, field, and `get_api_key()`; `wpto_model` is now an optional comma-separated model-preference list read via `get_model_preference()` (returns `string[]`); the "Test API key" button/AJAX (`wpto_test_api_key`) became "Check AI provider" (`wpto_check_ai_provider` → `ajax_check_provider()`). `assets/admin.js` handler and the `wptoData.i18n` keys updated to match (`enterApiKey`/`testingApiKey` → `checkingProvider`).
+- `class-wpto-activator.php`: `DB_VERSION` 2 → 3; `activate()` no longer seeds `wpto_api_key`; `maybe_upgrade()` deletes the stale `wpto_api_key` option.
+- Moved the admin-notice URL-cleanup from an inline `<script>` block in `WPTO_Admin_Page::strip_notice_query_args()` (removed) to the enqueued `assets/admin.js`, fed by a new `NOTICE_QUERY_ARGS` class constant passed through `wptoData.noticeArgs`. Resolves the Plugin Check "use `wp_enqueue`" finding.
+
 ## [0.23.3] - 2026-08-22
 
 - Fixed the "All tags" table staying empty after an Ajax action (bulk delete, or lock/hide with "Hide locked tags" on) removed every row on the current page: pagination and item counts went stale until a manual refresh or page change. Added `reloadIfTableEmpty()` in `assets/admin.js`, which auto-reloads the page once no `wpto-tag-row-*` row is left after a delete or lock-triggered hide.

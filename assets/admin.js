@@ -17,20 +17,14 @@
 		} );
 	} );
 
-	$( '#wpto-test-api-key' ).on( 'click', function () {
+	$( '#wpto-check-provider' ).on( 'click', function () {
 		var $btn = $( this );
-		var $result = $( '#wpto-test-api-key-result' );
-		var apiKey = $( '#wpto_api_key' ).val();
-
-		if ( ! apiKey ) {
-			$result.text( wptoData.i18n.enterApiKey );
-			return;
-		}
+		var $result = $( '#wpto-check-provider-result' );
 
 		$btn.prop( 'disabled', true );
-		$result.text( wptoData.i18n.testingApiKey );
+		$result.text( wptoData.i18n.checkingProvider );
 
-		ajax( { action: 'wpto_test_api_key', api_key: apiKey } ).done( function ( response ) {
+		ajax( { action: 'wpto_check_ai_provider' } ).done( function ( response ) {
 			$result.text( response.success ? response.data.message : ( response.data && response.data.message ? response.data.message : wptoData.i18n.error ) );
 		} ).fail( function () {
 			$result.text( wptoData.i18n.error );
@@ -625,5 +619,30 @@
 		$button.on( 'click', function () {
 			$( 'html, body' ).animate( { scrollTop: 0 }, 300 );
 		} );
+	} )();
+
+	// Drop one-shot admin-notice query args (wpto_merged, wpto_deleted, ...)
+	// from the visible URL once the notice has rendered, so a plain page
+	// refresh doesn't keep re-showing a dismissed notice.
+	( function () {
+		var args = ( wptoData && wptoData.noticeArgs ) || [];
+
+		if ( ! args.length || typeof window.URL !== 'function' ) {
+			return;
+		}
+
+		var url = new URL( window.location.href );
+		var changed = false;
+
+		args.forEach( function ( arg ) {
+			if ( url.searchParams.has( arg ) ) {
+				url.searchParams.delete( arg );
+				changed = true;
+			}
+		} );
+
+		if ( changed ) {
+			window.history.replaceState( {}, document.title, url.toString() );
+		}
 	} )();
 } )( jQuery );

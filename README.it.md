@@ -1,39 +1,39 @@
-# Smart Tags for WordPress
+# Termcraft - Taxonomy Manager
 
 *[README also available in English](README.md)*
 
-Un plugin WordPress per gestire i tag dei tuoi articoli con o senza IA: ottieni da Claude (Anthropic) suggerimenti per unire duplicati/sinonimi e segnalare i tag inutilizzati, oppure cerca, unisci ed elimina i tag manualmente. Nulla viene modificato automaticamente: ogni suggerimento IA richiede approvazione manuale.
+Un plugin WordPress per gestire i tag e i termini di tassonomia dei tuoi articoli con o senza IA: ottieni suggerimenti di unione/pulizia tramite l'AI Client di WordPress core, oppure cerca, unisci ed elimina i tag manualmente. Nulla viene modificato automaticamente: ogni suggerimento IA richiede approvazione manuale.
 
 ## Requisiti
 
-- WordPress 6.0 o superiore
+- WordPress 7.0 o superiore (include l'AI Client di core)
 - PHP 7.4 o superiore
-- Una API key Anthropic
+- Un provider IA configurato nell'AI Client di WordPress core (solo per la tab "AI Analysis")
 
 ## Installazione
 
-1. Copia l'intera cartella del plugin in `wp-content/plugins/ai-tags-optimizer/` sul tuo sito WordPress.
-2. Vai su **Plugin** nella bacheca di WordPress e attiva "Smart Tags for WordPress".
+1. Copia l'intera cartella del plugin in `wp-content/plugins/termcraft/` sul tuo sito WordPress.
+2. Vai su **Plugin** nella bacheca di WordPress e attiva "Termcraft".
 
 ## Lingua
 
-L'interfaccia del plugin è in inglese di default. Le traduzioni (italiano incluso) sono gestite tramite [translate.wordpress.org](https://translate.wordpress.org/) invece di essere incluse nel plugin. Questo è indipendente dalla lingua che Claude usa per scrivere il "motivo" di ogni suggerimento, configurabile separatamente nelle Impostazioni.
+L'interfaccia del plugin è in inglese di default. Le traduzioni (italiano incluso) sono gestite tramite [translate.wordpress.org](https://translate.wordpress.org/) invece di essere incluse nel plugin. Questo è indipendente dalla lingua che l'IA usa per scrivere il "motivo" di ogni suggerimento, configurabile separatamente nelle Impostazioni.
 
 ## Configurazione
 
-Vai su **Strumenti → Smart Tags for WordPress: Settings** e compila:
+Prima configura un provider IA nelle impostazioni di WordPress (AI Client di WordPress 7.0). Poi vai su **Strumenti → Termcraft: Settings** e, se serve, regola:
 
 | Campo | Descrizione |
 |---|---|
-| **Anthropic API Key** | La tua API key di Claude. Usa il bottone **"Test API key"** per verificarla prima di salvare. |
-| **Model** | Il modello Claude usato per l'analisi, es. `claude-haiku-4-5`. |
-| **Batch size** | Numero di tag inviati per ogni chiamata API (10-500). |
-| **AI response language** | Lingua che Claude deve usare per il testo "motivo" di ogni suggerimento. Lascia vuoto per farla corrispondere automaticamente alla lingua dei nomi dei tag. |
+| **AI provider** | Usa il bottone **"Check AI provider"** per verificare che un provider sia configurato. Le credenziali stanno in WordPress core, non nel plugin. |
+| **Preferred model(s)** | Opzionale. ID di modelli separati da virgola in ordine di priorità (es. `claude-haiku-4-5, gpt-5.4`); l'AI Client usa il primo supportato dal tuo provider. Vuoto = modello di default del provider. |
+| **Batch size** | Numero di tag inviati per ogni richiesta IA (10-500). |
+| **AI response language** | Lingua che l'IA deve usare per il testo "motivo" di ogni suggerimento. Lascia vuoto per farla corrispondere automaticamente alla lingua dei nomi dei tag. |
 | **Full cleanup on uninstall** | Se attivo (default), l'eliminazione del plugin rimuove impostazioni e storico di suggerimenti/batch dal database. |
 
 ## Avviare un'analisi
 
-1. Vai su **Articoli → Smart Tags**, nella tab **"AI Analysis"**.
+1. Vai su **Articoli → Termcraft**, nella tab **"AI Analysis"**.
 2. Clicca **"Start analysis"**. I tag vengono elaborati a batch, con un log di elaborazione live e un indicatore di avanzamento; usa **"Stop analysis"** per interromperla.
 3. Al termine dei batch, i suggerimenti compaiono raggruppati per tipo:
    - **Near-duplicates** — quasi-duplicati testuali (refusi, plurali, maiuscole/minuscole, trattini/spazi)

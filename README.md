@@ -1,39 +1,39 @@
-# Smart Tags for WordPress
+# Termcraft - Taxonomy Manager
 
 *[README disponibile anche in italiano](README.it.md)*
 
-A WordPress plugin to manage your post tags with or without AI: get Claude (Anthropic) suggestions for merging duplicates/synonyms and flagging unused tags, or search, merge, and delete tags manually. Nothing is changed automatically — every AI suggestion requires manual approval.
+A WordPress plugin to manage your post tags and taxonomy terms with or without AI: get merge/cleanup suggestions through WordPress core's AI Client, or search, merge, and delete tags manually. Nothing is changed automatically — every AI suggestion requires manual approval.
 
 ## Requirements
 
-- WordPress 6.0 or higher
+- WordPress 7.0 or higher (bundles the core AI Client)
 - PHP 7.4 or higher
-- An Anthropic API key
+- An AI provider configured in WordPress core's AI Client (only for the "AI Analysis" tab)
 
 ## Installation
 
-1. Copy the whole plugin folder to `wp-content/plugins/ai-tags-optimizer/` on your WordPress site.
-2. Go to **Plugins** in the WordPress dashboard and activate "Smart Tags for WordPress".
+1. Copy the whole plugin folder to `wp-content/plugins/termcraft/` on your WordPress site.
+2. Go to **Plugins** in the WordPress dashboard and activate "Termcraft".
 
 ## Language
 
-The plugin interface is in English by default. Translations (including Italian) are handled via [translate.wordpress.org](https://translate.wordpress.org/) rather than bundled with the plugin. This is independent from the language Claude uses when writing the "reason" for each suggestion, which is configured separately in Settings.
+The plugin interface is in English by default. Translations (including Italian) are handled via [translate.wordpress.org](https://translate.wordpress.org/) rather than bundled with the plugin. This is independent from the language the AI uses when writing the "reason" for each suggestion, which is configured separately in Settings.
 
 ## Configuration
 
-Go to **Tools → Smart Tags for WordPress: Settings** and fill in:
+First configure an AI provider in the WordPress settings (WordPress 7.0's AI Client). Then go to **Tools → Termcraft: Settings** and, if needed, adjust:
 
 | Field | Description |
 |---|---|
-| **Anthropic API Key** | Your Claude API key. Use the **"Test API key"** button to verify it before saving. |
-| **Model** | The Claude model used for analysis, e.g. `claude-haiku-4-5`. |
-| **Batch size** | Number of tags sent per API call (10-500). |
-| **AI response language** | Language Claude should use for the "reason" text on each suggestion. Leave blank to match the language of your tag names automatically. |
+| **AI provider** | Use the **"Check AI provider"** button to confirm a provider is configured. Credentials live in WordPress core, not in this plugin. |
+| **Preferred model(s)** | Optional. Comma-separated model IDs in priority order (e.g. `claude-haiku-4-5, gpt-5.4`); the AI Client uses the first one your provider supports. Blank = provider default. |
+| **Batch size** | Number of tags sent per AI request (10-500). |
+| **AI response language** | Language the AI should use for the "reason" text on each suggestion. Leave blank to match the language of your tag names automatically. |
 | **Full cleanup on uninstall** | When checked (default), deleting the plugin removes its settings and suggestion/batch history from the database. |
 
 ## Running an analysis
 
-1. Go to **Posts → Smart Tags**, on the **"AI Analysis"** tab.
+1. Go to **Posts → Termcraft**, on the **"AI Analysis"** tab.
 2. Click **"Start analysis"**. Tags are processed in batches, with a live processing log and progress indicator; use **"Stop analysis"** to interrupt it.
 3. Once batches complete, suggestions appear grouped by type:
    - **Near-duplicates** — textual near-duplicates (typos, plurals, casing, hyphens/spaces)

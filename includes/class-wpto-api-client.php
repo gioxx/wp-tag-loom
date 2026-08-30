@@ -3,138 +3,73 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Talks to the AI provider through WordPress core's AI Client
+ * (wp_ai_client_prompt(), WordPress 7.0+). The site owner picks and
+ * configures the provider once under Settings; this plugin never handles
+ * credentials or contacts a provider directly.
+ */
 class WPTO_Api_Client {
-
-	const API_URL = 'https://api.anthropic.com/v1/messages';
-	const API_VERSION = '2023-06-01';
 
 	const VALID_TYPES = array( 'near_duplicate', 'semantic_overlap', 'low_usage_merge' );
 
+	const MAX_TOKENS = 4096;
+
 	/**
-	 * Analyze a batch of tags via the Claude API.
+	 * Analyze a batch of tags via the configured AI provider.
 	 *
 	 * @param array $tags Array of ['id' => int, 'name' => string, 'count' => int].
 	 * @return array|WP_Error List of validated suggestion arrays, or WP_Error on failure.
 	 */
 	public function analyze_batch( array $tags ) {
-		$api_key = WPTO_Settings::get_api_key();
-
-		if ( empty( $api_key ) ) {
-			return new WP_Error( 'wpto_no_api_key', __( 'No API key configured.', 'smart-tags-optimizer' ) );
+		if ( ! function_exists( 'wp_ai_client_prompt' ) ) {
+			return new WP_Error( 'wpto_no_ai_client', __( 'The AI Analysis feature requires WordPress 7.0 or newer, which bundles the core AI Client.', 'termcraft' ) );
 		}
 
 		$valid_ids = wp_list_pluck( $tags, 'id' );
 
-		$body = array(
-			'model'      => WPTO_Settings::get_model(),
-			'max_tokens' => 4096,
-			'system'     => $this->build_system_prompt(),
-			'messages'   => array(
-				array(
-					'role'    => 'user',
-					'content' => wp_json_encode( $tags ),
-				),
-			),
-		);
+		$builder = wp_ai_client_prompt( wp_json_encode( $tags ) )
+			->using_system_instruction( $this->build_system_prompt() )
+			->using_max_tokens( self::MAX_TOKENS )
+			->using_temperature( 0.2 );
 
-		$response = wp_remote_post(
-			self::API_URL,
-			array(
-				'timeout' => 120,
-				'headers' => array(
-					'x-api-key'         => $api_key,
-					'anthropic-version' => self::API_VERSION,
-					'content-type'      => 'application/json',
-				),
-				'body'    => wp_json_encode( $body ),
-			)
-		);
-
-		if ( is_wp_error( $response ) ) {
-			return $response;
+		$preferred = WPTO_Settings::get_model_preference();
+		if ( ! empty( $preferred ) ) {
+			$builder->using_model_preference( ...$preferred );
 		}
 
-		$status_code = wp_remote_retrieve_response_code( $response );
-		$raw_body    = wp_remote_retrieve_body( $response );
-
-		if ( $status_code < 200 || $status_code >= 300 ) {
-			return new WP_Error(
-				'wpto_api_error',
-				sprintf(
-					/* translators: 1: HTTP status code, 2: response body */
-					__( 'Claude API error (HTTP %1$d): %2$s', 'smart-tags-optimizer' ),
-					$status_code,
-					$raw_body
-				)
-			);
+		if ( ! $builder->is_supported_for_text_generation() ) {
+			return new WP_Error( 'wpto_no_ai_provider', __( 'No AI provider is configured. Set one up in the WordPress settings before running an analysis.', 'termcraft' ) );
 		}
 
-		$decoded = json_decode( $raw_body, true );
+		$text = $builder->generate_text();
 
-		if ( ! is_array( $decoded ) || empty( $decoded['content'][0]['text'] ) ) {
-			return new WP_Error( 'wpto_bad_response', __( 'Unexpected API response format.', 'smart-tags-optimizer' ) );
+		if ( is_wp_error( $text ) ) {
+			return $text;
 		}
 
-		return $this->parse_suggestions( $decoded['content'][0]['text'], $valid_ids );
+		if ( ! is_string( $text ) || '' === trim( $text ) ) {
+			return new WP_Error( 'wpto_bad_response', __( 'The AI provider returned an empty response.', 'termcraft' ) );
+		}
+
+		return $this->parse_suggestions( $text, $valid_ids );
 	}
 
 	/**
-	 * Sends a minimal request to validate an API key without consuming a real batch.
+	 * Reports whether a usable text-generation provider is configured.
 	 *
-	 * @param string $api_key Key to test.
-	 * @return true|WP_Error True on success, WP_Error with a human-readable message otherwise.
+	 * @return true|WP_Error True when the AI Client can generate text, WP_Error otherwise.
 	 */
-	public function test_connection( $api_key ) {
-		if ( empty( $api_key ) ) {
-			return new WP_Error( 'wpto_no_api_key', __( 'No API key configured.', 'smart-tags-optimizer' ) );
+	public function provider_available() {
+		if ( ! function_exists( 'wp_ai_client_prompt' ) ) {
+			return new WP_Error( 'wpto_no_ai_client', __( 'The AI Analysis feature requires WordPress 7.0 or newer, which bundles the core AI Client.', 'termcraft' ) );
 		}
 
-		$response = wp_remote_post(
-			self::API_URL,
-			array(
-				'timeout' => 30,
-				'headers' => array(
-					'x-api-key'         => $api_key,
-					'anthropic-version' => self::API_VERSION,
-					'content-type'      => 'application/json',
-				),
-				'body'    => wp_json_encode(
-					array(
-						'model'      => WPTO_Settings::get_model(),
-						'max_tokens' => 1,
-						'messages'   => array(
-							array(
-								'role'    => 'user',
-								'content' => 'Hi',
-							),
-						),
-					)
-				),
-			)
-		);
-
-		if ( is_wp_error( $response ) ) {
-			return $response;
+		if ( wp_ai_client_prompt( 'ping' )->is_supported_for_text_generation() ) {
+			return true;
 		}
 
-		$status_code = wp_remote_retrieve_response_code( $response );
-
-		if ( $status_code < 200 || $status_code >= 300 ) {
-			$decoded = json_decode( wp_remote_retrieve_body( $response ), true );
-			$message = isset( $decoded['error']['message'] ) ? $decoded['error']['message'] : wp_remote_retrieve_body( $response );
-
-			return new WP_Error(
-				'wpto_api_error',
-				sprintf(
-					/* translators: 1: HTTP status code, 2: error message */
-					__( 'Claude API error (HTTP %1$d): %2$s', 'smart-tags-optimizer' ),
-					$status_code,
-					$message
-				)
-			);
-		}
-
-		return true;
+		return new WP_Error( 'wpto_no_ai_provider', __( 'No AI provider is configured. Set one up in the WordPress settings before running an analysis.', 'termcraft' ) );
 	}
 
 	private function build_system_prompt() {
@@ -171,7 +106,7 @@ class WPTO_Api_Client {
 		$decoded = json_decode( $text, true );
 
 		if ( ! is_array( $decoded ) || ! isset( $decoded['suggestions'] ) || ! is_array( $decoded['suggestions'] ) ) {
-			return new WP_Error( 'wpto_invalid_json', __( 'The model response does not contain valid JSON.', 'smart-tags-optimizer' ) );
+			return new WP_Error( 'wpto_invalid_json', __( 'The model response does not contain valid JSON.', 'termcraft' ) );
 		}
 
 		$valid_ids_flip = array_flip( array_map( 'intval', $valid_ids ) );

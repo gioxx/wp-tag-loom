@@ -5,13 +5,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WPTO_Activator {
 
-	const DB_VERSION = '2';
+	const DB_VERSION = '3';
 
 	public static function activate() {
 		self::create_tables();
 
-		add_option( 'wpto_api_key', '' );
-		add_option( 'wpto_model', 'claude-haiku-4-5' );
+		add_option( 'wpto_model', '' );
 		add_option( 'wpto_batch_size', 150 );
 		add_option( 'wpto_ai_language', '' );
 		add_option( 'wpto_cleanup_on_uninstall', 1 );
@@ -21,6 +20,8 @@ class WPTO_Activator {
 	/**
 	 * Re-runs dbDelta on plugins_loaded when the schema version changed,
 	 * so already-active installs pick up new columns without reactivation.
+	 * Also drops the obsolete wpto_api_key option: credentials now live in
+	 * WordPress core's AI Client, not in this plugin.
 	 */
 	public static function maybe_upgrade() {
 		if ( get_option( 'wpto_db_version' ) === self::DB_VERSION ) {
@@ -28,6 +29,7 @@ class WPTO_Activator {
 		}
 
 		self::create_tables();
+		delete_option( 'wpto_api_key' );
 		update_option( 'wpto_db_version', self::DB_VERSION );
 	}
 
