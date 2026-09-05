@@ -24,10 +24,10 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 	public function get_columns() {
 		return array(
 			'cb'    => '<input type="checkbox" />',
-			'name'  => __( 'Name', 'termcraft' ),
-			'slug'  => __( 'Slug', 'termcraft' ),
-			'count' => __( 'Assigned posts', 'termcraft' ),
-			'lock'  => __( 'Lock', 'termcraft' ),
+			'name'  => __( 'Name', 'tag-loom' ),
+			'slug'  => __( 'Slug', 'tag-loom' ),
+			'count' => __( 'Assigned posts', 'tag-loom' ),
+			'lock'  => __( 'Lock', 'tag-loom' ),
 		);
 	}
 
@@ -40,15 +40,15 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 
 	protected function get_bulk_actions() {
 		return array(
-			'add_to_merge' => __( 'Add to merge selection', 'termcraft' ),
-			'lock'         => __( 'Lock', 'termcraft' ),
-			'unlock'       => __( 'Unlock', 'termcraft' ),
-			'delete'       => __( 'Delete', 'termcraft' ),
+			'add_to_merge' => __( 'Add to merge selection', 'tag-loom' ),
+			'lock'         => __( 'Lock', 'tag-loom' ),
+			'unlock'       => __( 'Unlock', 'tag-loom' ),
+			'delete'       => __( 'Delete', 'tag-loom' ),
 		);
 	}
 
 	public function no_items() {
-		esc_html_e( 'No tags found.', 'termcraft' );
+		esc_html_e( 'No tags found.', 'tag-loom' );
 	}
 
 	public function column_cb( $item ) {
@@ -76,8 +76,8 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 		);
 
 		$label = $locked
-			? __( 'Unlock this tag', 'termcraft' )
-			: __( 'Lock this tag (protects it from merging and deletion)', 'termcraft' );
+			? __( 'Unlock this tag', 'tag-loom' )
+			: __( 'Lock this tag (protects it from merging and deletion)', 'tag-loom' );
 
 		return sprintf(
 			'<a href="%s" class="wpto-toggle-lock %s" data-id="%d" aria-label="%s" title="%s"><span class="dashicons %s"></span></a>',
@@ -119,9 +119,9 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 				$item['id'],
 				esc_attr( $item['name'] ),
 				esc_attr( $item['slug'] ),
-				esc_html__( 'Quick Edit', 'termcraft' )
+				esc_html__( 'Quick Edit', 'tag-loom' )
 			),
-			'edit'       => sprintf( '<a href="%s">%s</a>', esc_url( $edit_url ), esc_html__( 'Edit', 'termcraft' ) ),
+			'edit'       => sprintf( '<a href="%s">%s</a>', esc_url( $edit_url ), esc_html__( 'Edit', 'tag-loom' ) ),
 		);
 
 		if ( ! WPTO_Tag_Lock::is_locked( $item['id'] ) ) {
@@ -132,7 +132,7 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 				'<a href="%s" class="submitdelete wpto-delete-tag" data-id="%d">%s</a>',
 				esc_url( $delete_url ),
 				$item['id'],
-				esc_html__( 'Delete', 'termcraft' )
+				esc_html__( 'Delete', 'tag-loom' )
 			);
 		}
 

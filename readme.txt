@@ -1,20 +1,20 @@
-=== Termcraft - Taxonomy Manager ===
+=== Tag Loom - Taxonomy Manager ===
 Contributors: gioxx
-GitHub Plugin URI: https://github.com/gioxx/wp-termcraft
+GitHub Plugin URI: https://github.com/gioxx/wp-tag-loom
 Tags: tags, taxonomy, terms, cleanup, ai
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.24.0
+Stable tag: 0.24.1
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Manage tags and taxonomy terms with or without AI: merge/cleanup suggestions via WordPress core's AI Client, or search, merge, delete manually.
 
 == Description ==
-Termcraft sends your post tags in batches to whichever AI provider the site owner has configured in WordPress core's AI Client, and asks it to spot near-duplicates, semantic overlaps, and low-usage tags that could be merged into a broader existing tag. Nothing is changed automatically: every suggestion is queued for review and only applied when you approve it. Alongside the AI analysis, a "Manage Tags" tab covers manual, non-AI tag housekeeping: usage statistics, search, merge, and delete.
+Tag Loom sends your post tags in batches to whichever AI provider the site owner has configured in WordPress core's AI Client, and asks it to spot near-duplicates, semantic overlaps, and low-usage tags that could be merged into a broader existing tag. Nothing is changed automatically: every suggestion is queued for review and only applied when you approve it. Alongside the AI analysis, a "Manage Tags" tab covers manual, non-AI tag housekeeping: usage statistics, search, merge, and delete.
 
-Termcraft does not ship its own AI integration or store an API key. It relies entirely on the AI Client bundled in WordPress 7.0, so it works with any provider you have set up (Anthropic, OpenAI, Google, and others) and the provider can be swapped at the site level without touching the plugin.
+Tag Loom does not ship its own AI integration or store an API key. It relies entirely on the AI Client bundled in WordPress 7.0, so it works with any provider you have set up (Anthropic, OpenAI, Google, and others) and the provider can be swapped at the site level without touching the plugin.
 
 Features:
 * Batch analysis of all tags through the core AI Client, with a live processing log, progress tracking, and a stop button
@@ -33,10 +33,10 @@ The "AI Analysis" tab uses WordPress core's AI Client (introduced in WordPress 7
 
 == Installation ==
 1. Requires WordPress 7.0 or newer (for the bundled AI Client).
-2. Copy the whole plugin folder to `wp-content/plugins/termcraft/`.
+2. Copy the whole plugin folder to `wp-content/plugins/tag-loom/`.
 3. Activate the plugin through the 'Plugins' menu in WordPress.
 4. Configure an AI provider in the WordPress settings (only needed for the "AI Analysis" tab).
-5. Go to **Posts → Termcraft** and use "Manage Tags", or click "Start analysis" on the "AI Analysis" tab.
+5. Go to **Posts → Tag Loom** and use "Manage Tags", or click "Start analysis" on the "AI Analysis" tab.
 
 == Frequently Asked Questions ==
 = Does this change my tags automatically? =
@@ -49,6 +49,9 @@ It's kept in a "Rejected suggestions" list and can be restored to pending at any
 Yes, the "Unused tags" table lists them with a bulk delete option.
 
 == Changelog ==
+= 0.24.1 =
+* Renamed the plugin again, from "Termcraft - Taxonomy Manager" to "Tag Loom - Taxonomy Manager" (display name, slug/text domain, main file, GitHub repository), after the WordPress.org directory review rejected "Termcraft" as already used as another project's distinctive name.
+
 = 0.24.0 =
 * Renamed the plugin from "Smart Tags Optimizer" to "Termcraft - Taxonomy Manager" (display name, slug/text domain, main file) for the WordPress.org directory review: the former name was flagged as too generic and close to an existing "Smart Tags" term.
 * Replaced the direct Anthropic Claude integration with WordPress core's AI Client (`wp_ai_client_prompt()`). The plugin no longer stores an API key or contacts any provider directly; the site owner configures a provider once in the WordPress settings and can use any supported provider.
@@ -179,7 +182,7 @@ Yes, the "Unused tags" table lists them with a bulk delete option.
 
 == Upgrade Notice ==
 = 0.24.0 =
-Requires WordPress 7.0+. The plugin was renamed to Termcraft and now uses core's AI Client instead of a stored Anthropic key; configure an AI provider in WordPress settings to use the "AI Analysis" tab.
+Requires WordPress 7.0+. The plugin was renamed to Tag Loom and now uses core's AI Client instead of a stored Anthropic key; configure an AI provider in WordPress settings to use the "AI Analysis" tab.
 
 = 0.5.0 =
 Plugin, folder and text domain were renamed from wp-tags-optimizer to ai-tags-optimizer; reinstall from the new plugin folder if updating manually.

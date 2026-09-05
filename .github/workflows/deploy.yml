@@ -30,12 +30,12 @@ jobs:
       - name: Read plugin version
         id: version
         run: |
-          VERSION=$(grep -m1 '^ \* Version:' termcraft.php | sed -E 's/.*Version:\s*//')
+          VERSION=$(grep -m1 '^ \* Version:' tag-loom.php | sed -E 's/.*Version:\s*//')
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build clean plugin directory
         run: |
-          SLUG=termcraft
+          SLUG=tag-loom
           STAGING="/tmp/$SLUG"
           rm -rf "$STAGING"
           mkdir -p "$STAGING"
@@ -51,6 +51,6 @@ jobs:
         env:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
-          SLUG: termcraft
+          SLUG: tag-loom
           VERSION: ${{ steps.version.outputs.version }}
           BUILD_DIR: ${{ env.STAGING }}

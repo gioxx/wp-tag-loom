@@ -19,7 +19,7 @@ class WPTO_Merge_Handler {
 		$target    = get_term( $target_id, 'post_tag' );
 
 		if ( ! $target || is_wp_error( $target ) ) {
-			return new WP_Error( 'wpto_missing_target', __( 'The target tag no longer exists.', 'termcraft' ) );
+			return new WP_Error( 'wpto_missing_target', __( 'The target tag no longer exists.', 'tag-loom' ) );
 		}
 
 		// A locked target is safe: it always survives a merge (only source
@@ -29,7 +29,7 @@ class WPTO_Merge_Handler {
 		$source_ids = json_decode( $suggestion['source_term_ids'], true );
 
 		if ( ! is_array( $source_ids ) || empty( $source_ids ) ) {
-			return new WP_Error( 'wpto_missing_source', __( 'No valid source tag in the suggestion.', 'termcraft' ) );
+			return new WP_Error( 'wpto_missing_source', __( 'No valid source tag in the suggestion.', 'tag-loom' ) );
 		}
 
 		$source_names = array();

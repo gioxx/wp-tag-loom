@@ -4,6 +4,10 @@ All notable changes to this plugin are documented in this file.
 
 ## [Unreleased]
 
+## [0.24.1] - 2026-09-05
+
+- Renamed the plugin again, from "Termcraft - Taxonomy Manager" to **"Tag Loom - Taxonomy Manager"**, after the WordPress.org directory review rejected "Termcraft" as already used as another project's distinctive name. Changed the display name (`tag-loom.php` header, `readme.txt` title), the slug/text domain (`termcraft` → `tag-loom`, ~200 `__()`/`_e()` calls across `includes/`), renamed the main file `termcraft.php` → `tag-loom.php` (plus the `release.yml`/`deploy.yml` path trigger, version grep, and `SLUG`), and renamed the GitHub repository `gioxx/wp-termcraft` → `gioxx/wp-tag-loom`. The internal `wpto_` / `WPTO_` code prefix and the `wpto-*` admin-page slugs are unchanged.
+
 ## [0.24.0] - 2026-08-30
 
 - Renamed the plugin from "Smart Tags Optimizer" to **"Termcraft - Taxonomy Manager"** in response to the WordPress.org directory review, which flagged the old name as too generic and too close to an existing "Smart Tags" term. Changed the display name (`termcraft.php` header, `readme.txt` title), the slug/text domain (`smart-tags-optimizer` → `termcraft`, ~200 `__()`/`_e()` calls across `includes/`), and renamed the main file `ai-tags-optimizer.php` → `termcraft.php` (plus the `release.yml`/`deploy.yml` path trigger, version grep, and `SLUG`). The internal `wpto_` / `WPTO_` code prefix and the `wpto-*` admin-page slugs are unchanged.

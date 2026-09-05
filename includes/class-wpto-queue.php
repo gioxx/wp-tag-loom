@@ -21,7 +21,7 @@ class WPTO_Queue {
 		check_ajax_referer( 'wpto_admin_action', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'termcraft' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'tag-loom' ) ), 403 );
 		}
 
 		$ready = ( new WPTO_Api_Client() )->provider_available();
@@ -47,7 +47,7 @@ class WPTO_Queue {
 		check_ajax_referer( 'wpto_admin_action', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'termcraft' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'tag-loom' ) ), 403 );
 		}
 
 		self::process_next_batch();
@@ -59,7 +59,7 @@ class WPTO_Queue {
 		check_ajax_referer( 'wpto_admin_action', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'termcraft' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'tag-loom' ) ), 403 );
 		}
 
 		WPTO_Suggestions_Repo::cancel_pending_batches();
@@ -72,13 +72,13 @@ class WPTO_Queue {
 		check_ajax_referer( 'wpto_admin_action', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'termcraft' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'tag-loom' ) ), 403 );
 		}
 
 		$batch_id = isset( $_POST['batch_id'] ) ? absint( $_POST['batch_id'] ) : 0;
 
 		if ( ! $batch_id ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid batch.', 'termcraft' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid batch.', 'tag-loom' ) ) );
 		}
 
 		WPTO_Suggestions_Repo::retry_batch( $batch_id );
@@ -188,7 +188,7 @@ class WPTO_Queue {
 		$term_ids = json_decode( $batch['term_ids'], true );
 
 		if ( ! is_array( $term_ids ) || empty( $term_ids ) ) {
-			WPTO_Suggestions_Repo::mark_batch_failed( $batch['id'], __( 'Batch tag list is empty or invalid.', 'termcraft' ) );
+			WPTO_Suggestions_Repo::mark_batch_failed( $batch['id'], __( 'Batch tag list is empty or invalid.', 'tag-loom' ) );
 			self::maybe_reschedule();
 			return;
 		}
@@ -206,7 +206,7 @@ class WPTO_Queue {
 		}
 
 		if ( empty( $tags ) ) {
-			WPTO_Suggestions_Repo::mark_batch_failed( $batch['id'], __( 'No valid tags found for this batch.', 'termcraft' ) );
+			WPTO_Suggestions_Repo::mark_batch_failed( $batch['id'], __( 'No valid tags found for this batch.', 'tag-loom' ) );
 			self::maybe_reschedule();
 			return;
 		}

@@ -42,8 +42,8 @@ class WPTO_Admin_Page {
 
 	public static function register_menu() {
 		$main_hook = add_posts_page(
-			__( 'Termcraft', 'termcraft' ),
-			__( 'Termcraft', 'termcraft' ),
+			__( 'Tag Loom', 'tag-loom' ),
+			__( 'Tag Loom', 'tag-loom' ),
 			'manage_options',
 			self::MAIN_SLUG,
 			array( __CLASS__, 'render_main_page' )
@@ -52,8 +52,8 @@ class WPTO_Admin_Page {
 		add_action( "load-{$main_hook}", array( __CLASS__, 'maybe_add_screen_options' ) );
 
 		add_management_page(
-			__( 'Termcraft: Settings', 'termcraft' ),
-			__( 'Termcraft: Settings', 'termcraft' ),
+			__( 'Tag Loom: Settings', 'tag-loom' ),
+			__( 'Tag Loom: Settings', 'tag-loom' ),
 			'manage_options',
 			self::SETTINGS_SLUG,
 			array( 'WPTO_Settings', 'render_page' )
@@ -68,7 +68,7 @@ class WPTO_Admin_Page {
 		add_screen_option(
 			'per_page',
 			array(
-				'label'   => __( 'Tags per page', 'termcraft' ),
+				'label'   => __( 'Tags per page', 'tag-loom' ),
 				'default' => 20,
 				'option'  => 'wpto_tags_per_page',
 			)
@@ -109,25 +109,25 @@ class WPTO_Admin_Page {
 				'nonce'      => wp_create_nonce( 'wpto_admin_action' ),
 				'noticeArgs' => self::NOTICE_QUERY_ARGS,
 				'i18n'       => array(
-					'confirmDelete'      => __( 'Delete the selected tags?', 'termcraft' ),
-					'confirmMerge'       => __( 'Confirm this merge? This action cannot be undone.', 'termcraft' ),
-					'confirmDeleteTags'  => __( 'Delete the selected tags? This action cannot be undone.', 'termcraft' ),
-					'confirmBulkApprove' => __( 'Approve the selected suggestions? This action cannot be undone.', 'termcraft' ),
-					'confirmBulkReject'  => __( 'Reject the selected suggestions?', 'termcraft' ),
-					'confirmBulkRestore' => __( 'Restore the selected suggestions to pending?', 'termcraft' ),
-					'confirmNewAnalysis' => __( 'Starting a new analysis will clear any unreviewed pending suggestions and re-analyze your current tags. Rejected and previously applied suggestions are kept. Continue?', 'termcraft' ),
-					'noneSelected'       => __( 'Select at least one row first.', 'termcraft' ),
-					'bulkFailed'         => __( 'Some items could not be processed:', 'termcraft' ),
-					'error'              => __( 'Something went wrong.', 'termcraft' ),
-					'processing'         => __( 'Processing batch, this can take up to two minutes...', 'termcraft' ),
-					'checkingProvider'   => __( 'Checking...', 'termcraft' ),
-					'quickEditName'      => __( 'Name', 'termcraft' ),
-					'quickEditSlug'      => __( 'Slug', 'termcraft' ),
-					'quickEditSave'      => __( 'Save', 'termcraft' ),
-					'quickEditCancel'    => __( 'Cancel', 'termcraft' ),
-					'confirmDeleteTag'   => __( 'Delete this tag? This action cannot be undone.', 'termcraft' ),
-					'lockThisTag'        => __( 'Lock this tag (protects it from merging and deletion)', 'termcraft' ),
-					'unlockThisTag'      => __( 'Unlock this tag', 'termcraft' ),
+					'confirmDelete'      => __( 'Delete the selected tags?', 'tag-loom' ),
+					'confirmMerge'       => __( 'Confirm this merge? This action cannot be undone.', 'tag-loom' ),
+					'confirmDeleteTags'  => __( 'Delete the selected tags? This action cannot be undone.', 'tag-loom' ),
+					'confirmBulkApprove' => __( 'Approve the selected suggestions? This action cannot be undone.', 'tag-loom' ),
+					'confirmBulkReject'  => __( 'Reject the selected suggestions?', 'tag-loom' ),
+					'confirmBulkRestore' => __( 'Restore the selected suggestions to pending?', 'tag-loom' ),
+					'confirmNewAnalysis' => __( 'Starting a new analysis will clear any unreviewed pending suggestions and re-analyze your current tags. Rejected and previously applied suggestions are kept. Continue?', 'tag-loom' ),
+					'noneSelected'       => __( 'Select at least one row first.', 'tag-loom' ),
+					'bulkFailed'         => __( 'Some items could not be processed:', 'tag-loom' ),
+					'error'              => __( 'Something went wrong.', 'tag-loom' ),
+					'processing'         => __( 'Processing batch, this can take up to two minutes...', 'tag-loom' ),
+					'checkingProvider'   => __( 'Checking...', 'tag-loom' ),
+					'quickEditName'      => __( 'Name', 'tag-loom' ),
+					'quickEditSlug'      => __( 'Slug', 'tag-loom' ),
+					'quickEditSave'      => __( 'Save', 'tag-loom' ),
+					'quickEditCancel'    => __( 'Cancel', 'tag-loom' ),
+					'confirmDeleteTag'   => __( 'Delete this tag? This action cannot be undone.', 'tag-loom' ),
+					'lockThisTag'        => __( 'Lock this tag (protects it from merging and deletion)', 'tag-loom' ),
+					'unlockThisTag'      => __( 'Unlock this tag', 'tag-loom' ),
 				),
 			)
 		);
@@ -141,34 +141,34 @@ class WPTO_Admin_Page {
 		$active_tab = ( isset( $_GET['tab'] ) && 'optimizer' === $_GET['tab'] ) ? 'optimizer' : 'stats'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		?>
 		<div class="wrap wpto-wrap">
-			<h1><?php esc_html_e( 'Termcraft', 'termcraft' ); ?></h1>
+			<h1><?php esc_html_e( 'Tag Loom', 'tag-loom' ); ?></h1>
 
 			<p>
 				<?php
 				printf(
 					/* translators: %s: link to the plugin settings screen */
-					esc_html__( 'Need to change the AI provider, model preference, or other options? Head over to %s.', 'termcraft' ),
-					'<a href="' . esc_url( self::settings_page_url() ) . '">' . esc_html__( 'the plugin settings', 'termcraft' ) . '</a>'
+					esc_html__( 'Need to change the AI provider, model preference, or other options? Head over to %s.', 'tag-loom' ),
+					'<a href="' . esc_url( self::settings_page_url() ) . '">' . esc_html__( 'the plugin settings', 'tag-loom' ) . '</a>'
 				);
 				?>
 			</p>
 
 			<div class="wpto-intro">
 				<p>
-					<strong><?php esc_html_e( 'Manage Tags', 'termcraft' ); ?></strong>
+					<strong><?php esc_html_e( 'Manage Tags', 'tag-loom' ); ?></strong>
 					&mdash;
-					<?php esc_html_e( 'browse, search, sort, recount, delete, and merge tags by hand. No AI involved, nothing happens without your explicit confirmation.', 'termcraft' ); ?>
+					<?php esc_html_e( 'browse, search, sort, recount, delete, and merge tags by hand. No AI involved, nothing happens without your explicit confirmation.', 'tag-loom' ); ?>
 				</p>
 				<p>
-					<strong><?php esc_html_e( 'AI Analysis (experimental)', 'termcraft' ); ?></strong>
+					<strong><?php esc_html_e( 'AI Analysis (experimental)', 'tag-loom' ); ?></strong>
 					&mdash;
-					<?php esc_html_e( 'ask your configured AI provider to scan your tags for likely duplicates/synonyms and unused tags, then review and approve or reject each suggestion before anything changes.', 'termcraft' ); ?>
+					<?php esc_html_e( 'ask your configured AI provider to scan your tags for likely duplicates/synonyms and unused tags, then review and approve or reject each suggestion before anything changes.', 'tag-loom' ); ?>
 				</p>
 			</div>
 
 			<h2 class="nav-tab-wrapper">
-				<a href="<?php echo esc_url( self::main_page_url() ); ?>" class="nav-tab <?php echo esc_attr( 'stats' === $active_tab ? 'nav-tab-active' : '' ); ?>"><?php esc_html_e( 'Manage Tags', 'termcraft' ); ?></a>
-				<a href="<?php echo esc_url( add_query_arg( 'tab', 'optimizer', self::main_page_url() ) ); ?>" class="nav-tab <?php echo esc_attr( 'optimizer' === $active_tab ? 'nav-tab-active' : '' ); ?>"><?php esc_html_e( 'AI Analysis (experimental)', 'termcraft' ); ?></a>
+				<a href="<?php echo esc_url( self::main_page_url() ); ?>" class="nav-tab <?php echo esc_attr( 'stats' === $active_tab ? 'nav-tab-active' : '' ); ?>"><?php esc_html_e( 'Manage Tags', 'tag-loom' ); ?></a>
+				<a href="<?php echo esc_url( add_query_arg( 'tab', 'optimizer', self::main_page_url() ) ); ?>" class="nav-tab <?php echo esc_attr( 'optimizer' === $active_tab ? 'nav-tab-active' : '' ); ?>"><?php esc_html_e( 'AI Analysis (experimental)', 'tag-loom' ); ?></a>
 			</h2>
 
 			<?php if ( 'stats' === $active_tab ) : ?>
@@ -177,7 +177,7 @@ class WPTO_Admin_Page {
 				<?php self::render_optimizer_tab(); ?>
 			<?php endif; ?>
 
-			<button type="button" id="wpto-back-to-top" class="button button-primary" aria-label="<?php esc_attr_e( 'Back to top', 'termcraft' ); ?>">&uarr;</button>
+			<button type="button" id="wpto-back-to-top" class="button button-primary" aria-label="<?php esc_attr_e( 'Back to top', 'tag-loom' ); ?>">&uarr;</button>
 		</div>
 		<?php
 	}
@@ -205,38 +205,38 @@ class WPTO_Admin_Page {
 		}
 
 		$type_labels = array(
-			'near_duplicate'   => __( 'Near-duplicates', 'termcraft' ),
-			'semantic_overlap' => __( 'Semantic overlaps', 'termcraft' ),
-			'low_usage_merge'  => __( 'Low-usage tags', 'termcraft' ),
+			'near_duplicate'   => __( 'Near-duplicates', 'tag-loom' ),
+			'semantic_overlap' => __( 'Semantic overlaps', 'tag-loom' ),
+			'low_usage_merge'  => __( 'Low-usage tags', 'tag-loom' ),
 		);
 
 		?>
 			<div class="wpto-stats">
 				<div class="wpto-stat-tile">
 					<span class="wpto-stat-number"><?php echo esc_html( $counts['pending'] ); ?></span>
-					<span class="wpto-stat-label"><?php esc_html_e( 'Pending suggestions', 'termcraft' ); ?></span>
+					<span class="wpto-stat-label"><?php esc_html_e( 'Pending suggestions', 'tag-loom' ); ?></span>
 				</div>
 				<div class="wpto-stat-tile">
 					<span class="wpto-stat-number"><?php echo esc_html( $counts['applied'] ); ?></span>
-					<span class="wpto-stat-label"><?php esc_html_e( 'Merges applied', 'termcraft' ); ?></span>
+					<span class="wpto-stat-label"><?php esc_html_e( 'Merges applied', 'tag-loom' ); ?></span>
 				</div>
 				<div class="wpto-stat-tile">
 					<span class="wpto-stat-number"><?php echo esc_html( $counts['rejected'] ); ?></span>
-					<span class="wpto-stat-label"><?php esc_html_e( 'Rejected suggestions', 'termcraft' ); ?></span>
+					<span class="wpto-stat-label"><?php esc_html_e( 'Rejected suggestions', 'tag-loom' ); ?></span>
 				</div>
 			</div>
 
-			<h2><?php esc_html_e( 'AI Analysis (experimental)', 'termcraft' ); ?></h2>
+			<h2><?php esc_html_e( 'AI Analysis (experimental)', 'tag-loom' ); ?></h2>
 			<p>
-				<button type="button" class="button button-primary" id="wpto-start-analysis" <?php disabled( $progress['pending'] > 0 ); ?>><?php esc_html_e( 'Start analysis', 'termcraft' ); ?></button>
-				<button type="button" class="button" id="wpto-stop-analysis" <?php disabled( 0 === $progress['pending'] ); ?>><?php esc_html_e( 'Stop analysis', 'termcraft' ); ?></button>
+				<button type="button" class="button button-primary" id="wpto-start-analysis" <?php disabled( $progress['pending'] > 0 ); ?>><?php esc_html_e( 'Start analysis', 'tag-loom' ); ?></button>
+				<button type="button" class="button" id="wpto-stop-analysis" <?php disabled( 0 === $progress['pending'] ); ?>><?php esc_html_e( 'Stop analysis', 'tag-loom' ); ?></button>
 			</p>
 			<div id="wpto-progress" data-total="<?php echo esc_attr( $progress['total'] ); ?>" data-done="<?php echo esc_attr( $progress['done'] ); ?>" data-pending="<?php echo esc_attr( $progress['pending'] ); ?>">
 				<?php if ( $progress['total'] > 0 ) : ?>
 					<p><?php
 						printf(
 							/* translators: 1: batches done, 2: total batches */
-							esc_html__( 'Batches completed: %1$d / %2$d', 'termcraft' ),
+							esc_html__( 'Batches completed: %1$d / %2$d', 'tag-loom' ),
 							(int) $progress['done'],
 							(int) $progress['total']
 						);
@@ -245,14 +245,14 @@ class WPTO_Admin_Page {
 			</div>
 			<div id="wpto-current-status"></div>
 
-			<h3><?php esc_html_e( 'Processing log', 'termcraft' ); ?></h3>
+			<h3><?php esc_html_e( 'Processing log', 'tag-loom' ); ?></h3>
 			<ul id="wpto-log">
 				<?php foreach ( WPTO_Suggestions_Repo::get_recent_batches( 10 ) as $batch_row ) : ?>
 					<li data-batch-id="<?php echo esc_attr( $batch_row['id'] ); ?>">
 						<?php
 						printf(
 							/* translators: 1: batch id, 2: status, 3: timestamp */
-							esc_html__( 'Batch #%1$d - %2$s (%3$s)', 'termcraft' ),
+							esc_html__( 'Batch #%1$d - %2$s (%3$s)', 'tag-loom' ),
 							(int) $batch_row['id'],
 							esc_html( $batch_row['status'] ),
 							esc_html( $batch_row['processed_at'] ? $batch_row['processed_at'] : $batch_row['created_at'] )
@@ -266,12 +266,12 @@ class WPTO_Admin_Page {
 			</ul>
 
 			<?php if ( ! empty( $failed ) ) : ?>
-				<h3><?php esc_html_e( 'Failed batches', 'termcraft' ); ?></h3>
+				<h3><?php esc_html_e( 'Failed batches', 'tag-loom' ); ?></h3>
 				<table class="wp-list-table widefat fixed striped">
 					<thead>
 						<tr>
-							<th><?php esc_html_e( 'Batch ID', 'termcraft' ); ?></th>
-							<th><?php esc_html_e( 'Error', 'termcraft' ); ?></th>
+							<th><?php esc_html_e( 'Batch ID', 'tag-loom' ); ?></th>
+							<th><?php esc_html_e( 'Error', 'tag-loom' ); ?></th>
 							<th></th>
 						</tr>
 					</thead>
@@ -280,7 +280,7 @@ class WPTO_Admin_Page {
 							<tr>
 								<td><?php echo esc_html( $batch['id'] ); ?></td>
 								<td><?php echo esc_html( $batch['error_message'] ); ?></td>
-								<td><button type="button" class="button wpto-retry-batch" data-batch-id="<?php echo esc_attr( $batch['id'] ); ?>"><?php esc_html_e( 'Retry', 'termcraft' ); ?></button></td>
+								<td><button type="button" class="button wpto-retry-batch" data-batch-id="<?php echo esc_attr( $batch['id'] ); ?>"><?php esc_html_e( 'Retry', 'tag-loom' ); ?></button></td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
@@ -289,24 +289,24 @@ class WPTO_Admin_Page {
 
 			<hr />
 
-			<h2><?php esc_html_e( 'Suggestions', 'termcraft' ); ?></h2>
+			<h2><?php esc_html_e( 'Suggestions', 'tag-loom' ); ?></h2>
 
 			<?php foreach ( $grouped as $type => $rows ) : ?>
 				<?php if ( empty( $rows ) ) { continue; } ?>
 				<h3><?php echo esc_html( $type_labels[ $type ] ); ?></h3>
 				<p class="wpto-bulk-actions">
-					<button type="button" class="button wpto-bulk-approve" data-group="<?php echo esc_attr( $type ); ?>" disabled><?php esc_html_e( 'Approve selected', 'termcraft' ); ?></button>
-					<button type="button" class="button wpto-bulk-reject" data-group="<?php echo esc_attr( $type ); ?>" disabled><?php esc_html_e( 'Reject selected', 'termcraft' ); ?></button>
+					<button type="button" class="button wpto-bulk-approve" data-group="<?php echo esc_attr( $type ); ?>" disabled><?php esc_html_e( 'Approve selected', 'tag-loom' ); ?></button>
+					<button type="button" class="button wpto-bulk-reject" data-group="<?php echo esc_attr( $type ); ?>" disabled><?php esc_html_e( 'Reject selected', 'tag-loom' ); ?></button>
 				</p>
 				<table class="wp-list-table widefat fixed striped">
 					<thead>
 						<tr>
 							<td class="check-column"><input type="checkbox" class="wpto-select-all-suggestions" data-group="<?php echo esc_attr( $type ); ?>" autocomplete="off" /></td>
-							<th><?php esc_html_e( 'Source tag(s)', 'termcraft' ); ?></th>
-							<th><?php esc_html_e( 'Target tag', 'termcraft' ); ?></th>
-							<th><?php esc_html_e( 'Reason', 'termcraft' ); ?></th>
-							<th><?php esc_html_e( 'Confidence', 'termcraft' ); ?></th>
-							<th><?php esc_html_e( 'Actions', 'termcraft' ); ?></th>
+							<th><?php esc_html_e( 'Source tag(s)', 'tag-loom' ); ?></th>
+							<th><?php esc_html_e( 'Target tag', 'tag-loom' ); ?></th>
+							<th><?php esc_html_e( 'Reason', 'tag-loom' ); ?></th>
+							<th><?php esc_html_e( 'Confidence', 'tag-loom' ); ?></th>
+							<th><?php esc_html_e( 'Actions', 'tag-loom' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -318,19 +318,19 @@ class WPTO_Admin_Page {
 			<?php endforeach; ?>
 
 			<?php if ( ! empty( $rejected ) ) : ?>
-				<h3><?php esc_html_e( 'Rejected suggestions', 'termcraft' ); ?></h3>
+				<h3><?php esc_html_e( 'Rejected suggestions', 'tag-loom' ); ?></h3>
 				<p class="wpto-bulk-actions">
-					<button type="button" class="button wpto-bulk-restore" data-group="rejected" disabled><?php esc_html_e( 'Restore selected', 'termcraft' ); ?></button>
+					<button type="button" class="button wpto-bulk-restore" data-group="rejected" disabled><?php esc_html_e( 'Restore selected', 'tag-loom' ); ?></button>
 				</p>
 				<table class="wp-list-table widefat fixed striped">
 					<thead>
 						<tr>
 							<td class="check-column"><input type="checkbox" class="wpto-select-all-suggestions" data-group="rejected" autocomplete="off" /></td>
-							<th><?php esc_html_e( 'Source tag(s)', 'termcraft' ); ?></th>
-							<th><?php esc_html_e( 'Target tag', 'termcraft' ); ?></th>
-							<th><?php esc_html_e( 'Reason', 'termcraft' ); ?></th>
-							<th><?php esc_html_e( 'Confidence', 'termcraft' ); ?></th>
-							<th><?php esc_html_e( 'Actions', 'termcraft' ); ?></th>
+							<th><?php esc_html_e( 'Source tag(s)', 'tag-loom' ); ?></th>
+							<th><?php esc_html_e( 'Target tag', 'tag-loom' ); ?></th>
+							<th><?php esc_html_e( 'Reason', 'tag-loom' ); ?></th>
+							<th><?php esc_html_e( 'Confidence', 'tag-loom' ); ?></th>
+							<th><?php esc_html_e( 'Actions', 'tag-loom' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -343,16 +343,16 @@ class WPTO_Admin_Page {
 
 			<?php if ( ! empty( $applied ) ) : ?>
 				<hr />
-				<h2><?php esc_html_e( 'Applied suggestions (history)', 'termcraft' ); ?></h2>
-				<p class="description"><?php esc_html_e( 'The most recent merges applied to your tags, read-only.', 'termcraft' ); ?></p>
+				<h2><?php esc_html_e( 'Applied suggestions (history)', 'tag-loom' ); ?></h2>
+				<p class="description"><?php esc_html_e( 'The most recent merges applied to your tags, read-only.', 'tag-loom' ); ?></p>
 				<table class="wp-list-table widefat fixed striped">
 					<thead>
 						<tr>
-							<th><?php esc_html_e( 'Source tag(s)', 'termcraft' ); ?></th>
-							<th><?php esc_html_e( 'Target tag', 'termcraft' ); ?></th>
-							<th><?php esc_html_e( 'Reason', 'termcraft' ); ?></th>
-							<th><?php esc_html_e( 'Confidence', 'termcraft' ); ?></th>
-							<th><?php esc_html_e( 'Applied on', 'termcraft' ); ?></th>
+							<th><?php esc_html_e( 'Source tag(s)', 'tag-loom' ); ?></th>
+							<th><?php esc_html_e( 'Target tag', 'tag-loom' ); ?></th>
+							<th><?php esc_html_e( 'Reason', 'tag-loom' ); ?></th>
+							<th><?php esc_html_e( 'Confidence', 'tag-loom' ); ?></th>
+							<th><?php esc_html_e( 'Applied on', 'tag-loom' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -394,7 +394,7 @@ class WPTO_Admin_Page {
 			if ( ! empty( $ids ) ) {
 				self::add_to_merge_basket( $ids );
 				?>
-				<div class="notice notice-success wpto-scroll-to-merge"><p><?php esc_html_e( 'Added to the merge selection below.', 'termcraft' ); ?></p></div>
+				<div class="notice notice-success wpto-scroll-to-merge"><p><?php esc_html_e( 'Added to the merge selection below.', 'tag-loom' ); ?></p></div>
 				<?php
 			}
 		}
@@ -408,7 +408,7 @@ class WPTO_Admin_Page {
 			}
 
 			?>
-			<div class="notice notice-error"><p><?php esc_html_e( 'Select at least two tags to merge.', 'termcraft' ); ?></p></div>
+			<div class="notice notice-error"><p><?php esc_html_e( 'Select at least two tags to merge.', 'tag-loom' ); ?></p></div>
 			<?php
 		}
 
@@ -422,16 +422,16 @@ class WPTO_Admin_Page {
 			)
 		);
 		?>
-		<h2 id="wpto-section-overview"><?php esc_html_e( 'Overview', 'termcraft' ); ?></h2>
+		<h2 id="wpto-section-overview"><?php esc_html_e( 'Overview', 'tag-loom' ); ?></h2>
 		<div class="wpto-overview-panel">
 			<div class="wpto-stats">
 				<div class="wpto-stat-tile">
 					<span class="wpto-stat-number"><?php echo esc_html( number_format_i18n( $in_use_count ) ); ?></span>
-					<span class="wpto-stat-label"><?php esc_html_e( 'Tags in use', 'termcraft' ); ?></span>
+					<span class="wpto-stat-label"><?php esc_html_e( 'Tags in use', 'tag-loom' ); ?></span>
 				</div>
 				<div class="wpto-stat-tile">
 					<span class="wpto-stat-number"><?php echo esc_html( number_format_i18n( count( $unused_terms ) ) ); ?></span>
-					<span class="wpto-stat-label"><?php esc_html_e( 'Unused tags', 'termcraft' ); ?></span>
+					<span class="wpto-stat-label"><?php esc_html_e( 'Unused tags', 'tag-loom' ); ?></span>
 				</div>
 			</div>
 
@@ -440,21 +440,21 @@ class WPTO_Admin_Page {
 
 		<hr />
 
-		<h2 id="wpto-section-unused"><?php esc_html_e( 'Unused tags (0 posts)', 'termcraft' ); ?></h2>
+		<h2 id="wpto-section-unused"><?php esc_html_e( 'Unused tags (0 posts)', 'tag-loom' ); ?></h2>
 		<p>
-			<button type="button" class="button" id="wpto-recount-tags"><?php esc_html_e( 'Recount tag counts', 'termcraft' ); ?></button>
-			<span class="description"><?php esc_html_e( 'Fixes the per-tag post count if it has drifted out of sync with the actual associations (e.g. after an import).', 'termcraft' ); ?></span>
+			<button type="button" class="button" id="wpto-recount-tags"><?php esc_html_e( 'Recount tag counts', 'tag-loom' ); ?></button>
+			<span class="description"><?php esc_html_e( 'Fixes the per-tag post count if it has drifted out of sync with the actual associations (e.g. after an import).', 'tag-loom' ); ?></span>
 		</p>
 		<?php if ( empty( $unused_terms ) ) : ?>
-			<p><?php esc_html_e( 'No unused tags found.', 'termcraft' ); ?></p>
+			<p><?php esc_html_e( 'No unused tags found.', 'tag-loom' ); ?></p>
 		<?php else : ?>
 			<form id="wpto-unused-form">
 				<table class="wp-list-table widefat fixed striped">
 					<thead>
 						<tr>
 							<td class="check-column"><input type="checkbox" id="wpto-select-all-unused" autocomplete="off" /></td>
-							<th><?php esc_html_e( 'Name', 'termcraft' ); ?></th>
-							<th><?php esc_html_e( 'Slug', 'termcraft' ); ?></th>
+							<th><?php esc_html_e( 'Name', 'tag-loom' ); ?></th>
+							<th><?php esc_html_e( 'Slug', 'tag-loom' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -468,14 +468,14 @@ class WPTO_Admin_Page {
 					</tbody>
 				</table>
 				<p>
-					<button type="button" class="button button-secondary" id="wpto-delete-unused"><?php esc_html_e( 'Delete selected', 'termcraft' ); ?></button>
+					<button type="button" class="button button-secondary" id="wpto-delete-unused"><?php esc_html_e( 'Delete selected', 'tag-loom' ); ?></button>
 				</p>
 			</form>
 		<?php endif; ?>
 
 		<hr />
 
-		<h2 id="wpto-section-all-tags"><?php esc_html_e( 'All tags', 'termcraft' ); ?></h2>
+		<h2 id="wpto-section-all-tags"><?php esc_html_e( 'All tags', 'tag-loom' ); ?></h2>
 		<?php self::render_quick_sort_links(); ?>
 		<?php self::render_hide_locked_filter(); ?>
 		<?php
@@ -493,32 +493,32 @@ class WPTO_Admin_Page {
 					<?php
 					printf(
 						/* translators: %s: usage bucket label, e.g. "3-5" */
-						esc_html__( 'Filtering by usage: %s posts.', 'termcraft' ),
+						esc_html__( 'Filtering by usage: %s posts.', 'tag-loom' ),
 						esc_html( $current_bucket )
 					);
 					?>
-					<a href="<?php echo esc_url( add_query_arg( 'bucket', '', remove_query_arg( 'paged', add_query_arg( 'tab', 'stats', self::main_page_url() ) ) ) ); ?>"><?php esc_html_e( 'Clear filter', 'termcraft' ); ?></a>
+					<a href="<?php echo esc_url( add_query_arg( 'bucket', '', remove_query_arg( 'paged', add_query_arg( 'tab', 'stats', self::main_page_url() ) ) ) ); ?>"><?php esc_html_e( 'Clear filter', 'tag-loom' ); ?></a>
 				</p>
 			<?php endif; ?>
 			<?php
-			$table->search_box( __( 'Search tags', 'termcraft' ), 'wpto-tag-search' );
+			$table->search_box( __( 'Search tags', 'tag-loom' ), 'wpto-tag-search' );
 			$table->display();
 			?>
 		</form>
 
 		<hr />
 
-		<h2 id="wpto-section-merge"><?php esc_html_e( 'Merge selection', 'termcraft' ); ?></h2>
+		<h2 id="wpto-section-merge"><?php esc_html_e( 'Merge selection', 'tag-loom' ); ?></h2>
 		<?php self::render_merge_basket_bar(); ?>
 		<?php
 	}
 
 	private static function render_section_nav() {
 		$sections = array(
-			'wpto-section-overview' => __( 'Overview', 'termcraft' ),
-			'wpto-section-unused'   => __( 'Unused tags', 'termcraft' ),
-			'wpto-section-all-tags' => __( 'All tags', 'termcraft' ),
-			'wpto-section-merge'    => __( 'Merge selection', 'termcraft' ),
+			'wpto-section-overview' => __( 'Overview', 'tag-loom' ),
+			'wpto-section-unused'   => __( 'Unused tags', 'tag-loom' ),
+			'wpto-section-all-tags' => __( 'All tags', 'tag-loom' ),
+			'wpto-section-merge'    => __( 'Merge selection', 'tag-loom' ),
 		);
 		?>
 		<nav class="wpto-section-nav">
@@ -549,22 +549,22 @@ class WPTO_Admin_Page {
 
 		$presets = array(
 			array(
-				'label'   => __( 'Name A→Z', 'termcraft' ),
+				'label'   => __( 'Name A→Z', 'tag-loom' ),
 				'orderby' => 'name',
 				'order'   => 'asc',
 			),
 			array(
-				'label'   => __( 'Name Z→A', 'termcraft' ),
+				'label'   => __( 'Name Z→A', 'tag-loom' ),
 				'orderby' => 'name',
 				'order'   => 'desc',
 			),
 			array(
-				'label'   => __( 'Most used', 'termcraft' ),
+				'label'   => __( 'Most used', 'tag-loom' ),
 				'orderby' => 'count',
 				'order'   => 'desc',
 			),
 			array(
-				'label'   => __( 'Least used', 'termcraft' ),
+				'label'   => __( 'Least used', 'tag-loom' ),
 				'orderby' => 'count',
 				'order'   => 'asc',
 			),
@@ -577,7 +577,7 @@ class WPTO_Admin_Page {
 		}
 		?>
 		<p class="wpto-quick-sort">
-			<span class="wpto-quick-sort-label"><?php esc_html_e( 'Quick sort:', 'termcraft' ); ?></span>
+			<span class="wpto-quick-sort-label"><?php esc_html_e( 'Quick sort:', 'tag-loom' ); ?></span>
 			<?php foreach ( $presets as $preset ) : ?>
 				<?php
 				$is_active = ( $current_orderby === $preset['orderby'] && $current_order === $preset['order'] );
@@ -612,7 +612,7 @@ class WPTO_Admin_Page {
 					printf(
 						esc_html(
 							/* translators: 1: number of merged tags, 2: target tag name */
-							_n( 'Merged %1$d tag into "%2$s".', 'Merged %1$d tags into "%2$s".', $count, 'termcraft' )
+							_n( 'Merged %1$d tag into "%2$s".', 'Merged %1$d tags into "%2$s".', $count, 'tag-loom' )
 						),
 						absint( $count ),
 						esc_html( $target )
@@ -624,7 +624,7 @@ class WPTO_Admin_Page {
 		} elseif ( isset( $_GET['wpto_merge_error'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			?>
 			<div class="notice notice-error is-dismissible">
-				<p><?php esc_html_e( 'The merge could not be completed. Please try again.', 'termcraft' ); ?></p>
+				<p><?php esc_html_e( 'The merge could not be completed. Please try again.', 'tag-loom' ); ?></p>
 			</div>
 			<?php
 		} elseif ( isset( $_GET['wpto_deleted'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -636,7 +636,7 @@ class WPTO_Admin_Page {
 					echo esc_html(
 						sprintf(
 							/* translators: %d: number of deleted tags */
-							_n( '%d tag deleted.', '%d tags deleted.', $count, 'termcraft' ),
+							_n( '%d tag deleted.', '%d tags deleted.', $count, 'tag-loom' ),
 							$count
 						)
 					);
@@ -647,7 +647,7 @@ class WPTO_Admin_Page {
 		} elseif ( isset( $_GET['wpto_delete_error'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			?>
 			<div class="notice notice-error is-dismissible">
-				<p><?php esc_html_e( 'The tag could not be deleted. Please try again.', 'termcraft' ); ?></p>
+				<p><?php esc_html_e( 'The tag could not be deleted. Please try again.', 'tag-loom' ); ?></p>
 			</div>
 			<?php
 		} elseif ( isset( $_GET['wpto_locked'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -659,7 +659,7 @@ class WPTO_Admin_Page {
 					echo esc_html(
 						sprintf(
 							/* translators: %d: number of locked tags */
-							_n( '%d tag locked.', '%d tags locked.', $count, 'termcraft' ),
+							_n( '%d tag locked.', '%d tags locked.', $count, 'tag-loom' ),
 							$count
 						)
 					);
@@ -676,7 +676,7 @@ class WPTO_Admin_Page {
 					echo esc_html(
 						sprintf(
 							/* translators: %d: number of unlocked tags */
-							_n( '%d tag unlocked.', '%d tags unlocked.', $count, 'termcraft' ),
+							_n( '%d tag unlocked.', '%d tags unlocked.', $count, 'tag-loom' ),
 							$count
 						)
 					);
@@ -696,7 +696,7 @@ class WPTO_Admin_Page {
 						echo esc_html(
 							sprintf(
 								/* translators: %d: number of tags added to the merge selection */
-								_n( '%d tag added to the merge selection.', '%d tags added to the merge selection.', $added, 'termcraft' ),
+								_n( '%d tag added to the merge selection.', '%d tags added to the merge selection.', $added, 'tag-loom' ),
 								$added
 							)
 						);
@@ -713,7 +713,7 @@ class WPTO_Admin_Page {
 						<?php
 						printf(
 							/* translators: %s: comma-separated list of tag names that don't exist */
-							esc_html__( 'No matching tag found for: %s', 'termcraft' ),
+							esc_html__( 'No matching tag found for: %s', 'tag-loom' ),
 							esc_html( $not_found )
 						);
 						?>
@@ -783,13 +783,13 @@ class WPTO_Admin_Page {
 		?>
 		<div class="wpto-merge-basket">
 			<p>
-				<label for="wpto-merge-tag-names"><?php esc_html_e( 'Add tags by name:', 'termcraft' ); ?></label>
+				<label for="wpto-merge-tag-names"><?php esc_html_e( 'Add tags by name:', 'tag-loom' ); ?></label>
 				<form method="post" class="wpto-add-tags-by-name-form">
 					<?php wp_nonce_field( 'wpto_add_tags_by_name' ); ?>
 					<input type="hidden" name="page" value="<?php echo esc_attr( self::MAIN_SLUG ); ?>" />
 					<input type="hidden" name="tab" value="stats" />
-					<input type="text" id="wpto-merge-tag-names" name="wpto_tag_names" class="wpto-tag-autocomplete" placeholder="<?php echo esc_attr__( 'tag1, tag2, tag3', 'termcraft' ); ?>" />
-					<button type="submit" name="wpto_add_tags_by_name" value="1" class="button"><?php esc_html_e( 'Add to selection', 'termcraft' ); ?></button>
+					<input type="text" id="wpto-merge-tag-names" name="wpto_tag_names" class="wpto-tag-autocomplete" placeholder="<?php echo esc_attr__( 'tag1, tag2, tag3', 'tag-loom' ); ?>" />
+					<button type="submit" name="wpto_add_tags_by_name" value="1" class="button"><?php esc_html_e( 'Add to selection', 'tag-loom' ); ?></button>
 				</form>
 			</p>
 			<?php if ( $count > 0 ) : ?>
@@ -798,7 +798,7 @@ class WPTO_Admin_Page {
 					printf(
 						esc_html(
 							/* translators: 1: number of tags selected for merge, 2: comma-separated tag names */
-							_n( 'Merge selection (%1$d): %2$s', 'Merge selection (%1$d): %2$s', $count, 'termcraft' )
+							_n( 'Merge selection (%1$d): %2$s', 'Merge selection (%1$d): %2$s', $count, 'tag-loom' )
 						),
 						absint( $count ),
 						esc_html( implode( ', ', wp_list_pluck( $terms, 'name' ) ) )
@@ -809,9 +809,9 @@ class WPTO_Admin_Page {
 					<form method="post" style="display:inline;">
 						<input type="hidden" name="page" value="<?php echo esc_attr( self::MAIN_SLUG ); ?>" />
 						<input type="hidden" name="tab" value="stats" />
-						<button type="submit" name="wpto_prepare_merge_basket" value="1" class="button button-primary" <?php disabled( $count < 2 ); ?>><?php esc_html_e( 'Prepare merge', 'termcraft' ); ?></button>
+						<button type="submit" name="wpto_prepare_merge_basket" value="1" class="button button-primary" <?php disabled( $count < 2 ); ?>><?php esc_html_e( 'Prepare merge', 'tag-loom' ); ?></button>
 					</form>
-					<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'page' => self::MAIN_SLUG, 'tab' => 'stats', 'wpto_clear_merge_basket' => 1 ), admin_url( 'edit.php' ) ), 'wpto_clear_merge_basket' ) ); ?>" class="button"><?php esc_html_e( 'Clear selection', 'termcraft' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( array( 'page' => self::MAIN_SLUG, 'tab' => 'stats', 'wpto_clear_merge_basket' => 1 ), admin_url( 'edit.php' ) ), 'wpto_clear_merge_basket' ) ); ?>" class="button"><?php esc_html_e( 'Clear selection', 'tag-loom' ); ?></a>
 				</p>
 			<?php endif; ?>
 		</div>
@@ -827,14 +827,14 @@ class WPTO_Admin_Page {
 		);
 		$default_target = $terms[0]->term_id;
 		?>
-		<h2><?php esc_html_e( 'Confirm merge', 'termcraft' ); ?></h2>
-		<p><?php esc_html_e( 'These tags will be merged into the one you choose below; the others will be deleted and all their posts re-tagged with it.', 'termcraft' ); ?></p>
+		<h2><?php esc_html_e( 'Confirm merge', 'tag-loom' ); ?></h2>
+		<p><?php esc_html_e( 'These tags will be merged into the one you choose below; the others will be deleted and all their posts re-tagged with it.', 'tag-loom' ); ?></p>
 		<table class="wp-list-table widefat fixed striped">
 			<thead>
 				<tr>
-					<th><?php esc_html_e( 'Name', 'termcraft' ); ?></th>
-					<th><?php esc_html_e( 'Slug', 'termcraft' ); ?></th>
-					<th><?php esc_html_e( 'Assigned posts', 'termcraft' ); ?></th>
+					<th><?php esc_html_e( 'Name', 'tag-loom' ); ?></th>
+					<th><?php esc_html_e( 'Slug', 'tag-loom' ); ?></th>
+					<th><?php esc_html_e( 'Assigned posts', 'tag-loom' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -855,7 +855,7 @@ class WPTO_Admin_Page {
 				<input type="hidden" name="merge_tag_id[]" value="<?php echo esc_attr( $term->term_id ); ?>" />
 			<?php endforeach; ?>
 			<p>
-				<label for="wpto-merge-target"><?php esc_html_e( 'Merge into', 'termcraft' ); ?></label>
+				<label for="wpto-merge-target"><?php esc_html_e( 'Merge into', 'tag-loom' ); ?></label>
 				<select name="wpto_merge_target" id="wpto-merge-target">
 					<?php foreach ( $terms as $term ) : ?>
 						<option value="<?php echo esc_attr( $term->term_id ); ?>" <?php selected( $term->term_id, $default_target ); ?>><?php echo esc_html( $term->name ); ?></option>
@@ -863,8 +863,8 @@ class WPTO_Admin_Page {
 				</select>
 			</p>
 			<p>
-				<button type="submit" name="wpto_confirm_merge" value="1" class="button button-primary" id="wpto-confirm-merge-submit"><?php esc_html_e( 'Confirm merge', 'termcraft' ); ?></button>
-				<a href="<?php echo esc_url( add_query_arg( 'tab', 'stats', self::main_page_url() ) ); ?>" class="button"><?php esc_html_e( 'Cancel', 'termcraft' ); ?></a>
+				<button type="submit" name="wpto_confirm_merge" value="1" class="button button-primary" id="wpto-confirm-merge-submit"><?php esc_html_e( 'Confirm merge', 'tag-loom' ); ?></button>
+				<a href="<?php echo esc_url( add_query_arg( 'tab', 'stats', self::main_page_url() ) ); ?>" class="button"><?php esc_html_e( 'Cancel', 'tag-loom' ); ?></a>
 			</p>
 		</form>
 		<?php
@@ -927,7 +927,7 @@ class WPTO_Admin_Page {
 			<input type="hidden" name="wpto_hide_locked_submitted" value="1" />
 			<label>
 				<input type="checkbox" id="wpto-hide-locked" name="wpto_hide_locked" value="1" <?php checked( $hide_locked ); ?> onchange="this.form.submit()" />
-				<?php esc_html_e( 'Hide locked tags', 'termcraft' ); ?>
+				<?php esc_html_e( 'Hide locked tags', 'tag-loom' ); ?>
 			</label>
 		</form>
 		<?php
@@ -963,8 +963,8 @@ class WPTO_Admin_Page {
 		$base_url      = remove_query_arg( 'paged', add_query_arg( 'tab', 'stats', self::main_page_url() ) );
 		?>
 		<div class="wpto-overview-histogram">
-			<h3 class="wpto-overview-histogram-title"><?php esc_html_e( 'Usage distribution', 'termcraft' ); ?></h3>
-			<p class="description"><?php esc_html_e( 'Click a bar to filter the table below to that range.', 'termcraft' ); ?></p>
+			<h3 class="wpto-overview-histogram-title"><?php esc_html_e( 'Usage distribution', 'tag-loom' ); ?></h3>
+			<p class="description"><?php esc_html_e( 'Click a bar to filter the table below to that range.', 'tag-loom' ); ?></p>
 			<div class="wpto-histogram">
 				<?php foreach ( $buckets as $label => $count ) : ?>
 					<?php $is_active = ( $active_bucket === $label ); ?>
@@ -984,11 +984,11 @@ class WPTO_Admin_Page {
 					<?php
 					printf(
 						/* translators: %s: usage bucket label, e.g. "3-5" */
-						esc_html__( 'Filtering by usage: %s posts.', 'termcraft' ),
+						esc_html__( 'Filtering by usage: %s posts.', 'tag-loom' ),
 						esc_html( $active_bucket )
 					);
 					?>
-					<a href="<?php echo esc_url( add_query_arg( 'bucket', '', $base_url ) ); ?>"><?php esc_html_e( 'Clear filter', 'termcraft' ); ?></a>
+					<a href="<?php echo esc_url( add_query_arg( 'bucket', '', $base_url ) ); ?>"><?php esc_html_e( 'Clear filter', 'tag-loom' ); ?></a>
 				</p>
 			<?php endif; ?>
 		</div>
@@ -1284,16 +1284,16 @@ class WPTO_Admin_Page {
 			<td><?php echo esc_html( round( $row['confidence'] * 100 ) . '%' ); ?></td>
 			<td>
 				<?php if ( $rejected ) : ?>
-					<button type="button" class="button wpto-restore" data-id="<?php echo esc_attr( $row['id'] ); ?>"><?php esc_html_e( 'Restore', 'termcraft' ); ?></button>
+					<button type="button" class="button wpto-restore" data-id="<?php echo esc_attr( $row['id'] ); ?>"><?php esc_html_e( 'Restore', 'tag-loom' ); ?></button>
 				<?php else : ?>
-					<label class="screen-reader-text" for="wpto-target-<?php echo esc_attr( $row['id'] ); ?>"><?php esc_html_e( 'Merge into', 'termcraft' ); ?></label>
+					<label class="screen-reader-text" for="wpto-target-<?php echo esc_attr( $row['id'] ); ?>"><?php esc_html_e( 'Merge into', 'tag-loom' ); ?></label>
 					<select class="wpto-target-select" id="wpto-target-<?php echo esc_attr( $row['id'] ); ?>">
 						<?php foreach ( $all_terms as $tid => $tname ) : ?>
 							<option value="<?php echo esc_attr( $tid ); ?>" <?php selected( $tid, $target_id ); ?>><?php echo esc_html( $tname ); ?></option>
 						<?php endforeach; ?>
 					</select>
-					<button type="button" class="button button-primary wpto-approve" data-id="<?php echo esc_attr( $row['id'] ); ?>"><?php esc_html_e( 'Approve', 'termcraft' ); ?></button>
-					<button type="button" class="button wpto-reject" data-id="<?php echo esc_attr( $row['id'] ); ?>"><?php esc_html_e( 'Reject', 'termcraft' ); ?></button>
+					<button type="button" class="button button-primary wpto-approve" data-id="<?php echo esc_attr( $row['id'] ); ?>"><?php esc_html_e( 'Approve', 'tag-loom' ); ?></button>
+					<button type="button" class="button wpto-reject" data-id="<?php echo esc_attr( $row['id'] ); ?>"><?php esc_html_e( 'Reject', 'tag-loom' ); ?></button>
 				<?php endif; ?>
 			</td>
 		</tr>
@@ -1304,13 +1304,13 @@ class WPTO_Admin_Page {
 		check_ajax_referer( 'wpto_admin_action', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'termcraft' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'tag-loom' ) ), 403 );
 		}
 
 		$term_ids = isset( $_POST['term_ids'] ) ? array_map( 'absint', (array) $_POST['term_ids'] ) : array();
 
 		if ( empty( $term_ids ) ) {
-			wp_send_json_error( array( 'message' => __( 'No tags selected.', 'termcraft' ) ) );
+			wp_send_json_error( array( 'message' => __( 'No tags selected.', 'tag-loom' ) ) );
 		}
 
 		$result = WPTO_Unused_Tags::delete_terms( $term_ids );
@@ -1322,7 +1322,7 @@ class WPTO_Admin_Page {
 		check_ajax_referer( 'wpto_admin_action', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'termcraft' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'tag-loom' ) ), 403 );
 		}
 
 		$count = WPTO_Unused_Tags::recount_all();
@@ -1334,7 +1334,7 @@ class WPTO_Admin_Page {
 		check_ajax_referer( 'wpto_admin_action', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'termcraft' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'tag-loom' ) ), 403 );
 		}
 
 		$tag_id = isset( $_POST['tag_id'] ) ? absint( $_POST['tag_id'] ) : 0;
@@ -1342,7 +1342,7 @@ class WPTO_Admin_Page {
 		$slug   = isset( $_POST['slug'] ) ? sanitize_title( wp_unslash( $_POST['slug'] ) ) : '';
 
 		if ( ! $tag_id || '' === $name ) {
-			wp_send_json_error( array( 'message' => __( 'The tag name cannot be empty.', 'termcraft' ) ) );
+			wp_send_json_error( array( 'message' => __( 'The tag name cannot be empty.', 'tag-loom' ) ) );
 		}
 
 		$args = array( 'name' => $name );
@@ -1360,7 +1360,7 @@ class WPTO_Admin_Page {
 		$term = get_term( $result['term_id'], 'post_tag' );
 
 		if ( ! $term || is_wp_error( $term ) ) {
-			wp_send_json_error( array( 'message' => __( 'Something went wrong.', 'termcraft' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Something went wrong.', 'tag-loom' ) ) );
 		}
 
 		wp_send_json_success(
@@ -1375,13 +1375,13 @@ class WPTO_Admin_Page {
 		check_ajax_referer( 'wpto_admin_action', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'termcraft' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'tag-loom' ) ), 403 );
 		}
 
 		$tag_id = isset( $_POST['tag_id'] ) ? absint( $_POST['tag_id'] ) : 0;
 
 		if ( ! $tag_id || ! term_exists( $tag_id, 'post_tag' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Tag not found.', 'termcraft' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Tag not found.', 'tag-loom' ) ) );
 		}
 
 		$locked = ! WPTO_Tag_Lock::is_locked( $tag_id );
@@ -1394,7 +1394,7 @@ class WPTO_Admin_Page {
 		check_ajax_referer( 'wpto_admin_action', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'termcraft' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'tag-loom' ) ), 403 );
 		}
 
 		$ids    = isset( $_POST['tag_id'] ) ? array_map( 'absint', (array) $_POST['tag_id'] ) : array();
@@ -1402,7 +1402,7 @@ class WPTO_Admin_Page {
 		$locked = isset( $_POST['locked'] ) && '1' === $_POST['locked'];
 
 		if ( empty( $ids ) ) {
-			wp_send_json_error( array( 'message' => __( 'No tags selected.', 'termcraft' ) ) );
+			wp_send_json_error( array( 'message' => __( 'No tags selected.', 'tag-loom' ) ) );
 		}
 
 		foreach ( $ids as $id ) {
@@ -1421,7 +1421,7 @@ class WPTO_Admin_Page {
 		check_ajax_referer( 'wpto_admin_action', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'termcraft' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'tag-loom' ) ), 403 );
 		}
 
 		$ids = isset( $_POST['tag_id'] ) ? array_map( 'absint', (array) $_POST['tag_id'] ) : array();
@@ -1429,7 +1429,7 @@ class WPTO_Admin_Page {
 		$ids = WPTO_Tag_Lock::filter_unlocked( $ids );
 
 		if ( empty( $ids ) ) {
-			wp_send_json_error( array( 'message' => __( 'No tags could be deleted.', 'termcraft' ) ) );
+			wp_send_json_error( array( 'message' => __( 'No tags could be deleted.', 'tag-loom' ) ) );
 		}
 
 		$deleted = array();
@@ -1440,7 +1440,7 @@ class WPTO_Admin_Page {
 		}
 
 		if ( empty( $deleted ) ) {
-			wp_send_json_error( array( 'message' => __( 'The tag(s) could not be deleted.', 'termcraft' ) ) );
+			wp_send_json_error( array( 'message' => __( 'The tag(s) could not be deleted.', 'tag-loom' ) ) );
 		}
 
 		wp_send_json_success( array( 'ids' => $deleted ) );
@@ -1450,7 +1450,7 @@ class WPTO_Admin_Page {
 		check_ajax_referer( 'wpto_admin_action', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'termcraft' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'tag-loom' ) ), 403 );
 		}
 
 		$id              = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
@@ -1458,7 +1458,7 @@ class WPTO_Admin_Page {
 		$target_override = isset( $_POST['target_id'] ) ? absint( $_POST['target_id'] ) : 0;
 
 		if ( ! $id || ! in_array( $action, array( 'approve', 'reject', 'restore' ), true ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid request.', 'termcraft' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid request.', 'tag-loom' ) ) );
 		}
 
 		$error = self::apply_suggestion_action( $id, $action, $target_override );
@@ -1474,7 +1474,7 @@ class WPTO_Admin_Page {
 		check_ajax_referer( 'wpto_admin_action', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'termcraft' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Insufficient permissions.', 'tag-loom' ) ), 403 );
 		}
 
 		$ids    = isset( $_POST['ids'] ) ? array_map( 'absint', (array) $_POST['ids'] ) : array();
@@ -1482,7 +1482,7 @@ class WPTO_Admin_Page {
 		$ids    = array_filter( $ids );
 
 		if ( empty( $ids ) || ! in_array( $action, array( 'approve', 'reject', 'restore' ), true ) ) {
-			wp_send_json_error( array( 'message' => __( 'Invalid request.', 'termcraft' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Invalid request.', 'tag-loom' ) ) );
 		}
 
 		$succeeded = array();
@@ -1515,7 +1515,7 @@ class WPTO_Admin_Page {
 		$suggestion = WPTO_Suggestions_Repo::get_suggestion( $id );
 
 		if ( ! $suggestion ) {
-			return __( 'Suggestion not found.', 'termcraft' );
+			return __( 'Suggestion not found.', 'tag-loom' );
 		}
 
 		if ( 'reject' === $action ) {
@@ -1533,7 +1533,7 @@ class WPTO_Admin_Page {
 			$all_ids    = array_unique( array_merge( $source_ids, array( (int) $suggestion['target_term_id'] ) ) );
 
 			if ( ! in_array( $target_override, $all_ids, true ) ) {
-				return __( 'Invalid target selection.', 'termcraft' );
+				return __( 'Invalid target selection.', 'tag-loom' );
 			}
 
 			$suggestion['source_term_ids'] = wp_json_encode( array_values( array_diff( $all_ids, array( $target_override ) ) ) );

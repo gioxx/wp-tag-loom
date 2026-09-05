@@ -23,7 +23,7 @@ class WPTO_Api_Client {
 	 */
 	public function analyze_batch( array $tags ) {
 		if ( ! function_exists( 'wp_ai_client_prompt' ) ) {
-			return new WP_Error( 'wpto_no_ai_client', __( 'The AI Analysis feature requires WordPress 7.0 or newer, which bundles the core AI Client.', 'termcraft' ) );
+			return new WP_Error( 'wpto_no_ai_client', __( 'The AI Analysis feature requires WordPress 7.0 or newer, which bundles the core AI Client.', 'tag-loom' ) );
 		}
 
 		$valid_ids = wp_list_pluck( $tags, 'id' );
@@ -39,7 +39,7 @@ class WPTO_Api_Client {
 		}
 
 		if ( ! $builder->is_supported_for_text_generation() ) {
-			return new WP_Error( 'wpto_no_ai_provider', __( 'No AI provider is configured. Set one up in the WordPress settings before running an analysis.', 'termcraft' ) );
+			return new WP_Error( 'wpto_no_ai_provider', __( 'No AI provider is configured. Set one up in the WordPress settings before running an analysis.', 'tag-loom' ) );
 		}
 
 		$text = $builder->generate_text();
@@ -49,7 +49,7 @@ class WPTO_Api_Client {
 		}
 
 		if ( ! is_string( $text ) || '' === trim( $text ) ) {
-			return new WP_Error( 'wpto_bad_response', __( 'The AI provider returned an empty response.', 'termcraft' ) );
+			return new WP_Error( 'wpto_bad_response', __( 'The AI provider returned an empty response.', 'tag-loom' ) );
 		}
 
 		return $this->parse_suggestions( $text, $valid_ids );
@@ -62,14 +62,14 @@ class WPTO_Api_Client {
 	 */
 	public function provider_available() {
 		if ( ! function_exists( 'wp_ai_client_prompt' ) ) {
-			return new WP_Error( 'wpto_no_ai_client', __( 'The AI Analysis feature requires WordPress 7.0 or newer, which bundles the core AI Client.', 'termcraft' ) );
+			return new WP_Error( 'wpto_no_ai_client', __( 'The AI Analysis feature requires WordPress 7.0 or newer, which bundles the core AI Client.', 'tag-loom' ) );
 		}
 
 		if ( wp_ai_client_prompt( 'ping' )->is_supported_for_text_generation() ) {
 			return true;
 		}
 
-		return new WP_Error( 'wpto_no_ai_provider', __( 'No AI provider is configured. Set one up in the WordPress settings before running an analysis.', 'termcraft' ) );
+		return new WP_Error( 'wpto_no_ai_provider', __( 'No AI provider is configured. Set one up in the WordPress settings before running an analysis.', 'tag-loom' ) );
 	}
 
 	private function build_system_prompt() {
@@ -106,7 +106,7 @@ class WPTO_Api_Client {
 		$decoded = json_decode( $text, true );
 
 		if ( ! is_array( $decoded ) || ! isset( $decoded['suggestions'] ) || ! is_array( $decoded['suggestions'] ) ) {
-			return new WP_Error( 'wpto_invalid_json', __( 'The model response does not contain valid JSON.', 'termcraft' ) );
+			return new WP_Error( 'wpto_invalid_json', __( 'The model response does not contain valid JSON.', 'tag-loom' ) );
 		}
 
 		$valid_ids_flip = array_flip( array_map( 'intval', $valid_ids ) );

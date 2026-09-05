@@ -1,4 +1,4 @@
-# Termcraft - Taxonomy Manager
+# Tag Loom - Taxonomy Manager
 
 *[README also available in English](README.md)*
 
@@ -12,8 +12,8 @@ Un plugin WordPress per gestire i tag e i termini di tassonomia dei tuoi articol
 
 ## Installazione
 
-1. Copia l'intera cartella del plugin in `wp-content/plugins/termcraft/` sul tuo sito WordPress.
-2. Vai su **Plugin** nella bacheca di WordPress e attiva "Termcraft".
+1. Copia l'intera cartella del plugin in `wp-content/plugins/tag-loom/` sul tuo sito WordPress.
+2. Vai su **Plugin** nella bacheca di WordPress e attiva "Tag Loom".
 
 ## Lingua
 
@@ -21,7 +21,7 @@ L'interfaccia del plugin è in inglese di default. Le traduzioni (italiano inclu
 
 ## Configurazione
 
-Prima configura un provider IA nelle impostazioni di WordPress (AI Client di WordPress 7.0). Poi vai su **Strumenti → Termcraft: Settings** e, se serve, regola:
+Prima configura un provider IA nelle impostazioni di WordPress (AI Client di WordPress 7.0). Poi vai su **Strumenti → Tag Loom: Settings** e, se serve, regola:
 
 | Campo | Descrizione |
 |---|---|
@@ -33,7 +33,7 @@ Prima configura un provider IA nelle impostazioni di WordPress (AI Client di Wor
 
 ## Avviare un'analisi
 
-1. Vai su **Articoli → Termcraft**, nella tab **"AI Analysis"**.
+1. Vai su **Articoli → Tag Loom**, nella tab **"AI Analysis"**.
 2. Clicca **"Start analysis"**. I tag vengono elaborati a batch, con un log di elaborazione live e un indicatore di avanzamento; usa **"Stop analysis"** per interromperla.
 3. Al termine dei batch, i suggerimenti compaiono raggruppati per tipo:
    - **Near-duplicates** — quasi-duplicati testuali (refusi, plurali, maiuscole/minuscole, trattini/spazi)
@@ -57,4 +57,4 @@ La tab **"Manage Tags"** (accanto a "AI Analysis" sulla stessa pagina) raccoglie
 
 ## Aggiornamenti
 
-Il plugin è compatibile con [Git Updater](https://git-updater.com/), quindi può essere mantenuto aggiornato direttamente dal [repository GitHub](https://github.com/gioxx/wp-termcraft) senza passare da WordPress.org.
+Il plugin è compatibile con [Git Updater](https://git-updater.com/), quindi può essere mantenuto aggiornato direttamente dal [repository GitHub](https://github.com/gioxx/wp-tag-loom) senza passare da WordPress.org.

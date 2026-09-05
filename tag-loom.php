@@ -1,17 +1,17 @@
 <?php
 /**
- * Plugin Name: Termcraft - Taxonomy Manager
+ * Plugin Name: Tag Loom - Taxonomy Manager
  * Description: Manage WordPress tags and taxonomy terms, with or without AI: get suggestions (via WordPress core's AI Client) for merging duplicates/synonyms and flagging unused terms, or search, merge, and delete them manually. Always requires manual approval before any change.
- * Version: 0.24.0
+ * Version: 0.24.1
  * Requires at least: 7.0
  * Requires PHP: 7.4
  * Author: Gioxx
  * Author URI: https://gioxx.org
- * Plugin URI: https://github.com/gioxx/wp-termcraft
+ * Plugin URI: https://github.com/gioxx/wp-tag-loom
  * License: GPL-2.0-or-later
- * Text Domain: termcraft
+ * Text Domain: tag-loom
  *
- * GitHub Plugin URI: gioxx/wp-termcraft
+ * GitHub Plugin URI: gioxx/wp-tag-loom
  * GitHub Branch: main
  * GitHub Languages: true
  * Release Asset: true
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WPTO_VERSION', '0.24.0' );
+define( 'WPTO_VERSION', '0.24.1' );
 define( 'WPTO_PLUGIN_FILE', __FILE__ );
 define( 'WPTO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPTO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -58,7 +58,7 @@ add_action(
 add_filter(
 	'plugin_action_links_' . plugin_basename( __FILE__ ),
 	function ( array $links ) {
-		$settings_link = '<a href="' . esc_url( WPTO_Admin_Page::settings_page_url() ) . '">' . esc_html__( 'Settings', 'termcraft' ) . '</a>';
+		$settings_link = '<a href="' . esc_url( WPTO_Admin_Page::settings_page_url() ) . '">' . esc_html__( 'Settings', 'tag-loom' ) . '</a>';
 		array_unshift( $links, $settings_link );
 
 		return $links;
