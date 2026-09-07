@@ -5,7 +5,7 @@ Tags: tags, taxonomy, terms, cleanup, ai
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.24.1
+Stable tag: 0.24.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,9 @@ It's kept in a "Rejected suggestions" list and can be restored to pending at any
 Yes, the "Unused tags" table lists them with a bulk delete option.
 
 == Changelog ==
+= 0.24.2 =
+* Security: the per-user list filters that persist across page loads (usage bucket, "Hide locked tags", quick-sort order) now require a valid `wpto_filter_prefs` nonce before writing to user meta. Forged cross-site links can no longer alter another logged-in user's saved filter preferences; the filter is still applied to the current view. Addresses a WordPress.org directory review finding on `get_active_bucket()`.
+
 = 0.24.1 =
 * Renamed the plugin again, from "Termcraft - Taxonomy Manager" to "Tag Loom - Taxonomy Manager" (display name, slug/text domain, main file, GitHub repository), after the WordPress.org directory review rejected "Termcraft" as already used as another project's distinctive name.
 

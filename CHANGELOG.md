@@ -4,6 +4,10 @@ All notable changes to this plugin are documented in this file.
 
 ## [Unreleased]
 
+## [0.24.2] - 2026-09-07
+
+- Security (WordPress.org directory review, round T2): the per-user "All tags" list filters that persist across page loads — usage bucket (`WPTO_Admin_Page::get_active_bucket()`), "Hide locked tags" (`get_hide_locked_tags()`), and quick-sort order (`WPTO_Tag_Stats_Table::prepare_items()`) — now write to user meta only after `WPTO_Admin_Page::can_persist_filter_pref()` passes, which checks `current_user_can( 'manage_options' )` and a `wpto_filter_prefs` nonce. The histogram bars, quick-sort buttons, "Clear filter" links, and the hide-locked / tags-filter `<form method="get">` now carry that nonce via `wp_nonce_url()` / `wp_nonce_field()`. A request without a valid nonce still has its filter applied to the current view but no longer alters another logged-in user's saved preferences (CSRF). The reviewer flagged only `get_active_bucket()`; the sibling cases were fixed in the same pass.
+
 ## [0.24.1] - 2026-09-05
 
 - Renamed the plugin again, from "Termcraft - Taxonomy Manager" to **"Tag Loom - Taxonomy Manager"**, after the WordPress.org directory review rejected "Termcraft" as already used as another project's distinctive name. Changed the display name (`tag-loom.php` header, `readme.txt` title), the slug/text domain (`termcraft` → `tag-loom`, ~200 `__()`/`_e()` calls across `includes/`), renamed the main file `termcraft.php` → `tag-loom.php` (plus the `release.yml`/`deploy.yml` path trigger, version grep, and `SLUG`), and renamed the GitHub repository `gioxx/wp-termcraft` → `gioxx/wp-tag-loom`. The internal `wpto_` / `WPTO_` code prefix and the `wpto-*` admin-page slugs are unchanged.

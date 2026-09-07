@@ -185,7 +185,7 @@ class WPTO_Tag_Stats_Table extends WP_List_Table {
 				$order = 'desc';
 			}
 
-			if ( $user_id ) {
+			if ( $user_id && WPTO_Admin_Page::can_persist_filter_pref() ) {
 				update_user_meta( $user_id, 'wpto_tags_orderby', $orderby );
 				update_user_meta( $user_id, 'wpto_tags_order', $order );
 			}

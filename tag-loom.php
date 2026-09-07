@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Tag Loom - Taxonomy Manager
  * Description: Manage WordPress tags and taxonomy terms, with or without AI: get suggestions (via WordPress core's AI Client) for merging duplicates/synonyms and flagging unused terms, or search, merge, and delete them manually. Always requires manual approval before any change.
- * Version: 0.24.1
+ * Version: 0.24.2
  * Requires at least: 7.0
  * Requires PHP: 7.4
  * Author: Gioxx
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WPTO_VERSION', '0.24.1' );
+define( 'WPTO_VERSION', '0.24.2' );
 define( 'WPTO_PLUGIN_FILE', __FILE__ );
 define( 'WPTO_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WPTO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

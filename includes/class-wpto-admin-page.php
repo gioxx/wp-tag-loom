@@ -484,6 +484,7 @@ class WPTO_Admin_Page {
 		<form method="get" id="wpto-tags-filter">
 			<input type="hidden" name="page" value="<?php echo esc_attr( self::MAIN_SLUG ); ?>" />
 			<input type="hidden" name="tab" value="stats" />
+			<?php wp_nonce_field( 'wpto_filter_prefs', '_wpnonce', false ); ?>
 			<?php $current_bucket = self::get_active_bucket(); ?>
 			<?php if ( '' !== $current_bucket ) : ?>
 				<input type="hidden" name="bucket" value="<?php echo esc_attr( $current_bucket ); ?>" />
@@ -497,7 +498,7 @@ class WPTO_Admin_Page {
 						esc_html( $current_bucket )
 					);
 					?>
-					<a href="<?php echo esc_url( add_query_arg( 'bucket', '', remove_query_arg( 'paged', add_query_arg( 'tab', 'stats', self::main_page_url() ) ) ) ); ?>"><?php esc_html_e( 'Clear filter', 'tag-loom' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'bucket', '', remove_query_arg( 'paged', add_query_arg( 'tab', 'stats', self::main_page_url() ) ) ), 'wpto_filter_prefs' ) ); ?>"><?php esc_html_e( 'Clear filter', 'tag-loom' ); ?></a>
 				</p>
 			<?php endif; ?>
 			<?php
@@ -588,7 +589,7 @@ class WPTO_Admin_Page {
 					),
 					$base_url
 				);
-				$url       = remove_query_arg( 'paged', $url );
+				$url       = wp_nonce_url( remove_query_arg( 'paged', $url ), 'wpto_filter_prefs' );
 				?>
 				<a href="<?php echo esc_url( $url ); ?>" class="button button-small<?php echo $is_active ? ' button-primary' : ''; ?>"><?php echo esc_html( $preset['label'] ); ?></a>
 			<?php endforeach; ?>
@@ -871,6 +872,26 @@ class WPTO_Admin_Page {
 	}
 
 	/**
+	 * Whether the current request is authorised to persist a per-user list
+	 * filter/sort preference. Our own filter links and forms carry a
+	 * 'wpto_filter_prefs' nonce; a request without a valid nonce still has
+	 * its filter honoured for the current render but is never written to
+	 * user meta, so a CSRF-forged link cannot alter another user's saved
+	 * preferences.
+	 *
+	 * @return bool
+	 */
+	public static function can_persist_filter_pref() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return false;
+		}
+
+		$nonce = isset( $_REQUEST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) ) : '';
+
+		return (bool) wp_verify_nonce( $nonce, 'wpto_filter_prefs' );
+	}
+
+	/**
 	 * Resolves the active usage-bucket filter: an explicit ?bucket= in the
 	 * request always wins (and is remembered for next time, even if empty
 	 * i.e. an explicit "clear filter"); otherwise falls back to the value
@@ -880,10 +901,10 @@ class WPTO_Admin_Page {
 	public static function get_active_bucket() {
 		$user_id = get_current_user_id();
 
-		if ( isset( $_REQUEST['bucket'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_REQUEST['bucket'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only filter value; the write below is nonce-gated by can_persist_filter_pref().
 			$bucket = sanitize_text_field( wp_unslash( $_REQUEST['bucket'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-			if ( $user_id ) {
+			if ( $user_id && self::can_persist_filter_pref() ) {
 				update_user_meta( $user_id, 'wpto_tags_bucket', $bucket );
 			}
 
@@ -903,10 +924,10 @@ class WPTO_Admin_Page {
 	public static function get_hide_locked_tags() {
 		$user_id = get_current_user_id();
 
-		if ( isset( $_REQUEST['wpto_hide_locked_submitted'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_REQUEST['wpto_hide_locked_submitted'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only filter value; the write below is nonce-gated by can_persist_filter_pref().
 			$hide_locked = isset( $_REQUEST['wpto_hide_locked'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-			if ( $user_id ) {
+			if ( $user_id && self::can_persist_filter_pref() ) {
 				update_user_meta( $user_id, 'wpto_tags_hide_locked', $hide_locked ? '1' : '0' );
 			}
 
@@ -925,6 +946,7 @@ class WPTO_Admin_Page {
 			<input type="hidden" name="page" value="<?php echo esc_attr( self::MAIN_SLUG ); ?>" />
 			<input type="hidden" name="tab" value="stats" />
 			<input type="hidden" name="wpto_hide_locked_submitted" value="1" />
+			<?php wp_nonce_field( 'wpto_filter_prefs', '_wpnonce', false ); ?>
 			<label>
 				<input type="checkbox" id="wpto-hide-locked" name="wpto_hide_locked" value="1" <?php checked( $hide_locked ); ?> onchange="this.form.submit()" />
 				<?php esc_html_e( 'Hide locked tags', 'tag-loom' ); ?>
@@ -970,7 +992,7 @@ class WPTO_Admin_Page {
 					<?php $is_active = ( $active_bucket === $label ); ?>
 					<a
 						class="wpto-histogram-bar-wrap<?php echo $is_active ? ' wpto-histogram-bar-active' : ''; ?>"
-						href="<?php echo esc_url( add_query_arg( 'bucket', $label, $base_url ) ); ?>"
+						href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'bucket', $label, $base_url ), 'wpto_filter_prefs' ) ); ?>"
 						title="<?php echo esc_attr( $label ); ?>"
 					>
 						<span class="wpto-histogram-count"><?php echo esc_html( number_format_i18n( $count ) ); ?></span>
@@ -988,7 +1010,7 @@ class WPTO_Admin_Page {
 						esc_html( $active_bucket )
 					);
 					?>
-					<a href="<?php echo esc_url( add_query_arg( 'bucket', '', $base_url ) ); ?>"><?php esc_html_e( 'Clear filter', 'tag-loom' ); ?></a>
+					<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'bucket', '', $base_url ), 'wpto_filter_prefs' ) ); ?>"><?php esc_html_e( 'Clear filter', 'tag-loom' ); ?></a>
 				</p>
 			<?php endif; ?>
 		</div>
