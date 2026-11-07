@@ -48,6 +48,13 @@ It's kept in a "Rejected suggestions" list and can be restored to pending at any
 = Can I delete tags with 0 posts? =
 Yes, the "Unused tags" table lists them with a bulk delete option.
 
+== Screenshots ==
+
+1. AI Analysis: suggestions grouped into near-duplicates, semantic overlaps, and low-usage tags, each with the AI's reason and confidence. Nothing changes until you approve.
+2. Manage Tags overview: tags in use, unused tags, and a clickable usage distribution chart.
+3. All tags: sortable, searchable list with per-tag lock, bulk actions, and manual merge selection.
+4. Settings: AI provider check (WordPress core's AI Client), preferred models, batch size, AI response language, and cleanup on uninstall.
+
 == Changelog ==
 = 0.24.2 =
 * Security: the per-user list filters that persist across page loads (usage bucket, "Hide locked tags", quick-sort order) now require a valid `wpto_filter_prefs` nonce before writing to user meta. Forged cross-site links can no longer alter another logged-in user's saved filter preferences; the filter is still applied to the current view. Addresses a WordPress.org directory review finding on `get_active_bucket()`.
