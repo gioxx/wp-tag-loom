@@ -1,8 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
 <title id="title">Tag Loom icon</title><desc id="desc">Two overlapping taxonomy tags in blue and navy</desc>
-<defs><linearGradient id="blue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2788f5"/><stop offset="1" stop-color="#0064dc"/></linearGradient></defs>
+<defs>
+<path id="tag" d="M-82 -52 H34 L82 0 L34 52 H-82 Z"/>
+</defs>
 <rect width="256" height="256" rx="52" fill="#f0f8ff"/>
-<path d="M100 72 H178 Q188 72 188 82 V160 Q188 168 182 174 L124 231 Q117 238 109 231 L44 166 Q37 159 44 151 L93 78 Q96 72 100 72Z" fill="#fff" stroke="#07133e" stroke-width="10" stroke-linejoin="round" transform="translate(8 -7)"/>
-<path d="M92 32 H171 Q185 32 185 46 V115 Q185 124 178 131 L100 209 Q90 219 80 209 L24 153 Q14 143 24 133 L79 40 Q83 32 92 32Z" fill="url(#blue)"/>
-<circle cx="151" cy="65" r="11" fill="#fff"/>
+<g transform="translate(142 142) rotate(-45) scale(0.75)">
+<use href="#tag" fill="#07133e" stroke="#07133e" stroke-width="62" stroke-linejoin="round"/>
+<use href="#tag" fill="#f0f8ff" stroke="#f0f8ff" stroke-width="36" stroke-linejoin="round"/>
+</g>
+<g transform="translate(110 110) rotate(-45) scale(0.75)">
+<use href="#tag" fill="#f0f8ff" stroke="#f0f8ff" stroke-width="88" stroke-linejoin="round"/>
+<use href="#tag" fill="#0b6be6" stroke="#0b6be6" stroke-width="36" stroke-linejoin="round"/>
+<circle cx="50" cy="0" r="14" fill="#fff"/>
+</g>
 </svg>
