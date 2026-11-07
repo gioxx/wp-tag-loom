@@ -42,6 +42,7 @@ jobs:
           git -c core.quotepath=off ls-files \
             | grep -v '^\.github/' \
             | grep -v '^\.gitignore$' \
+            | grep -v '^\.wordpress-org/' \
             | grep -v '^README\.it\.md$' \
             | rsync -a --files-from=- . "$STAGING/"
           echo "STAGING=$STAGING" >> "$GITHUB_ENV"
