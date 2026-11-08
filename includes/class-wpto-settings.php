@@ -190,6 +190,9 @@ class WPTO_Settings {
 		if ( plugin_basename( WPTO_PLUGIN_FILE ) !== $file ) {
 			return $links;
 		}
+		if ( false === strpos( implode( ' ', (array) $links ), 'https://github.com/gioxx/wp-tag-loom' ) ) {
+			$links[] = '<a href="https://github.com/gioxx/wp-tag-loom" target="_blank" rel="noopener noreferrer">' . esc_html__( 'View on GitHub', 'tag-loom' ) . '</a>';
+		}
 		$links[] = '<a href="https://wordpress.gioxx.org/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'More plugins by Gioxx', 'tag-loom' ) . '</a>';
 
 		return $links;
