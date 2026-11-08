@@ -8,6 +8,7 @@ class WPTO_Settings {
 	const OPTION_GROUP = 'wpto_settings';
 
 	public static function init() {
+		add_filter( 'plugin_row_meta', array( __CLASS__, 'plugin_row_meta' ), 10, 2 );
 		add_action( 'admin_init', array( __CLASS__, 'register_settings' ) );
 		add_action( 'wp_ajax_wpto_check_ai_provider', array( __CLASS__, 'ajax_check_provider' ) );
 	}
@@ -178,19 +179,66 @@ class WPTO_Settings {
 		<?php
 	}
 
+	/**
+	 * Links under the plugin description on the Plugins screen.
+	 *
+	 * @param string[] $links Row meta links.
+	 * @param string   $file  Plugin basename of the row.
+	 * @return string[]
+	 */
+	public static function plugin_row_meta( $links, $file ) {
+		if ( plugin_basename( WPTO_PLUGIN_FILE ) !== $file ) {
+			return $links;
+		}
+		$links[] = '<a href="https://wordpress.gioxx.org/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'More plugins by Gioxx', 'tag-loom' ) . '</a>';
+
+		return $links;
+	}
+
 	private static function render_credits() {
 		?>
-		<div class="wpto-credits">
-			<p class="description">
-				<?php
-				printf(
-					/* translators: 1: link to the author's site, 2: link to the plugin repository */
-					esc_html__( 'Tag Loom by %1$s, source on %2$s.', 'tag-loom' ),
-					'<a href="https://gioxx.org" target="_blank" rel="noopener noreferrer">Gioxx</a>',
-					'<a href="https://github.com/gioxx/wp-tag-loom" target="_blank" rel="noopener noreferrer">GitHub</a>'
-				);
-				?>
-			</p>
+		<div class="wpto-footer">
+			<div class="wpto-footer__cards">
+				<div class="wpto-footer__card wpto-footer__card--plugin">
+					<span class="wpto-footer__badge"><img src="<?php echo esc_url( WPTO_PLUGIN_URL . 'assets/images/plugin-icon.svg' ); ?>" width="20" height="20" alt=""></span>
+					<div class="wpto-footer__body">
+						<p class="wpto-footer__eyebrow">
+							<?php
+							/* translators: %s: plugin version number */
+							printf( esc_html__( 'Version %s', 'tag-loom' ), esc_html( WPTO_VERSION ) );
+							?>
+						</p>
+						<h2 class="wpto-footer__title">Tag Loom</h2>
+						<p class="wpto-footer__text"><?php esc_html_e( 'Manage tags and taxonomy terms manually or with AI suggestions, always with manual approval.', 'tag-loom' ); ?></p>
+						<p class="wpto-footer__text">
+							<?php
+							printf(
+								/* translators: 1: link to the author's site, 2: link to the plugin repository */
+								esc_html__( 'Made by %1$s. Source code on %2$s.', 'tag-loom' ),
+								'<a href="https://gioxx.org" target="_blank" rel="noopener noreferrer">Gioxx</a>',
+								'<a href="https://github.com/gioxx/wp-tag-loom" target="_blank" rel="noopener noreferrer">GitHub</a>'
+							);
+							?>
+						</p>
+						<a class="button wpto-footer__action" href="https://github.com/gioxx/wp-tag-loom" target="_blank" rel="noopener noreferrer">
+							<?php esc_html_e( 'View on GitHub', 'tag-loom' ); ?>
+							<span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'tag-loom' ); ?></span>
+						</a>
+					</div>
+				</div>
+				<div class="wpto-footer__card wpto-footer__card--gallery">
+					<img class="wpto-footer__logo" src="<?php echo esc_url( WPTO_PLUGIN_URL . 'assets/images/gioxx-plugins.svg' ); ?>" width="40" height="40" alt="">
+					<div class="wpto-footer__body">
+						<p class="wpto-footer__eyebrow">gioxx/WordPress</p>
+						<h2 class="wpto-footer__title"><?php esc_html_e( 'Discover more plugins by Gioxx', 'tag-loom' ); ?></h2>
+						<p class="wpto-footer__text"><?php esc_html_e( 'A curated collection of open-source plugins for security, analytics, performance and integrations.', 'tag-loom' ); ?></p>
+						<a class="button wpto-footer__action" href="https://wordpress.gioxx.org/" target="_blank" rel="noopener noreferrer">
+							<?php esc_html_e( 'Browse the plugins', 'tag-loom' ); ?>
+							<span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'tag-loom' ); ?></span>
+						</a>
+					</div>
+				</div>
+			</div>
 			<p class="description wpto-trademark-notice">
 				<?php esc_html_e( 'All trademarks mentioned are the property of their respective owners. Third-party trademarks, product names, trade names, corporate names and companies mentioned may be trademarks of their respective owners or registered trademarks of other companies and have been used for explanatory purposes only and for the benefit of the owner, without any intent to infringe existing copyright.', 'tag-loom' ); ?>
 			</p>

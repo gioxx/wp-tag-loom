@@ -4,6 +4,9 @@ All notable changes to this plugin are documented in this file.
 
 ## [Unreleased]
 
+- Admin: the credits line at the bottom of the Settings screen becomes a two-card footer — Tag Loom (icon, version, links, "View on GitHub") next to an invitation to the author's plugin gallery at wordpress.gioxx.org, with the trademark notice below. Styles live in `assets/admin.css`; the icon (Lucide, ISC) and the gallery logo (a W drawn from the Bungee typeface, SIL OFL 1.1) are bundled in `assets/images/`, so nothing is loaded from other sites.
+- Plugins screen: a "More plugins by Gioxx" link under the plugin description.
+
 ## [0.24.2] - 2026-09-07
 
 - Security (WordPress.org directory review, round T2): the per-user "All tags" list filters that persist across page loads — usage bucket (`WPTO_Admin_Page::get_active_bucket()`), "Hide locked tags" (`get_hide_locked_tags()`), and quick-sort order (`WPTO_Tag_Stats_Table::prepare_items()`) — now write to user meta only after `WPTO_Admin_Page::can_persist_filter_pref()` passes, which checks `current_user_can( 'manage_options' )` and a `wpto_filter_prefs` nonce. The histogram bars, quick-sort buttons, "Clear filter" links, and the hide-locked / tags-filter `<form method="get">` now carry that nonce via `wp_nonce_url()` / `wp_nonce_field()`. A request without a valid nonce still has its filter applied to the current view but no longer alters another logged-in user's saved preferences (CSRF). The reviewer flagged only `get_active_bucket()`; the sibling cases were fixed in the same pass.
