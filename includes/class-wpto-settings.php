@@ -193,7 +193,7 @@ class WPTO_Settings {
 		if ( false === strpos( implode( ' ', (array) $links ), 'https://github.com/gioxx/wp-tag-loom' ) ) {
 			$links[] = '<a href="https://github.com/gioxx/wp-tag-loom" target="_blank" rel="noopener noreferrer">' . esc_html__( 'View on GitHub', 'tag-loom' ) . '</a>';
 		}
-		$links[] = '<a href="https://wordpress.gioxx.org/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'More plugins by Gioxx', 'tag-loom' ) . '</a>';
+		$links[] = '<a href="https://wordpress.gxware.org/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'More plugins by Gioxx', 'tag-loom' ) . '</a>';
 
 		return $links;
 	}
@@ -235,7 +235,7 @@ class WPTO_Settings {
 						<p class="wpto-footer__eyebrow">gioxx/WordPress</p>
 						<h2 class="wpto-footer__title"><?php esc_html_e( 'Discover more plugins by Gioxx', 'tag-loom' ); ?></h2>
 						<p class="wpto-footer__text"><?php esc_html_e( 'A curated collection of open-source plugins for security, analytics, performance and integrations.', 'tag-loom' ); ?></p>
-						<a class="button wpto-footer__action" href="https://wordpress.gioxx.org/" target="_blank" rel="noopener noreferrer">
+						<a class="button wpto-footer__action" href="https://wordpress.gxware.org/" target="_blank" rel="noopener noreferrer">
 							<?php esc_html_e( 'Browse the plugins', 'tag-loom' ); ?>
 							<span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'tag-loom' ); ?></span>
 						</a>
